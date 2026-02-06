@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dermato | AI Dermatology Interface</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
@@ -20,9 +20,13 @@
             --color-primary-dim: rgba(0, 150, 136, 0.1);
             --color-secondary: #004d61;     
             --color-text-main: #e0e0e0;
-            --color-text-dim: #888888;
-            --font-ui: 'Inter', sans-serif;
-            --font-code: 'JetBrains Mono', monospace;
+            --color-text-dim: #94a3b8; /* Slightly lighter for Rajdhani readability */
+            
+            /* NEW FONT STACK */
+            --font-display: 'Orbitron', sans-serif;  /* For Logo/H1 */
+            --font-ui: 'Rajdhani', sans-serif;       /* For Body/Text */
+            --font-code: 'JetBrains Mono', monospace; /* For Terminal */
+            
             --cursor-size: 20px;
         }
 
@@ -38,7 +42,9 @@
         body {
             background-color: var(--color-bg);
             color: var(--color-text-main);
-            font-family: var(--font-ui);
+            font-family: var(--font-ui); /* Default to Tech UI font */
+            font-size: 18px; /* Bumped up slightly as Rajdhani is condensed */
+            font-weight: 500;
             overflow-x: hidden;
             line-height: 1.6;
         }
@@ -46,65 +52,62 @@
         /* --------------------------------------------------
            CUSTOM CURSOR
            -------------------------------------------------- */
-        .cursor-dot,
-        .cursor-outline {
-            position: fixed;
-            top: 0; left: 0;
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0;
             transform: translate(-50%, -50%);
-            border-radius: 50%;
-            z-index: 9999;
-            pointer-events: none;
+            border-radius: 50%; z-index: 9999; pointer-events: none;
         }
-
         .cursor-dot { width: 4px; height: 4px; background-color: var(--color-primary); }
         .cursor-outline {
             width: var(--cursor-size); height: var(--cursor-size);
             border: 1px solid var(--color-primary);
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
-
         body.hovering .cursor-outline {
             width: 40px; height: 40px;
-            background-color: rgba(0, 150, 136, 0.1);
-            border-color: #fff;
+            background-color: rgba(0, 150, 136, 0.1); border-color: #fff;
         }
 
         /* --------------------------------------------------
            BOOT SCREEN
            -------------------------------------------------- */
         #boot-screen {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: #000;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: var(--font-code);
-            color: var(--color-primary);
+            background: #000; z-index: 10000;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            font-family: var(--font-code); color: var(--color-primary);
         }
-
         .boot-text { font-size: 0.9rem; margin-bottom: 0.5rem; opacity: 0; }
         .loader-line {
             width: 0%; height: 2px;
-            background: var(--color-primary);
-            margin-top: 20px;
+            background: var(--color-primary); margin-top: 20px;
             box-shadow: 0 0 10px var(--color-primary);
         }
 
         /* --------------------------------------------------
-           TYPOGRAPHY
+           TYPOGRAPHY UPDATES
            -------------------------------------------------- */
-        h1, h2, h3 { font-weight: 800; letter-spacing: -0.02em; }
+        h1 {
+            font-family: var(--font-display);
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        h2, h3 { 
+            font-family: var(--font-ui);
+            font-weight: 700; 
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
         
         h2 {
-            font-size: 2.5rem;
+            font-size: 3rem; /* Larger for Rajdhani */
             margin-bottom: 2rem;
             text-align: center;
-            /* Decryption effect makes this monospace temporarily, so we ensure height stability */
-            min-height: 3rem; 
+            min-height: 3.5rem; 
             color: #fff;
         }
 
@@ -114,30 +117,20 @@
            COMPONENTS
            -------------------------------------------------- */
         .btn {
-            display: inline-block;
-            padding: 1rem 2.5rem;
+            display: inline-block; padding: 1rem 2.5rem;
             background: rgba(0, 150, 136, 0.1);
             border: 1px solid var(--color-primary);
             color: var(--color-primary);
-            font-family: var(--font-code);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
+            font-family: var(--font-code); /* Keep buttons technical */
+            font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+            position: relative; overflow: hidden;
             transition: all 0.3s ease;
         }
-
         .btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: var(--color-primary);
-            transition: transform 0.4s ease;
-            z-index: -1;
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%; background: var(--color-primary);
+            transition: transform 0.4s ease; z-index: -1;
         }
-
         .btn:hover { color: #000; box-shadow: 0 0 20px var(--color-primary); }
         .btn:hover::before { transform: translateX(100%); }
 
@@ -147,96 +140,73 @@
            HEADER
            -------------------------------------------------- */
         header {
-            position: fixed;
-            top: 0; width: 100%;
-            padding: 1.5rem 0;
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: fixed; top: 0; width: 100%; padding: 1.5rem 0;
+            background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(10px);
+            z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             transform: translateY(-100%);
         }
-
         .header-inner { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-weight: 800; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        
+        .logo { 
+            font-family: var(--font-display); /* ORBITRON FOR LOGO */
+            font-weight: 700; font-size: 1.5rem; 
+            display: flex; align-items: center; gap: 10px; 
+            letter-spacing: 0.1em;
+        }
 
         .status-badge {
-            font-family: var(--font-code);
-            font-size: 0.75rem;
-            background: var(--color-primary-dim);
-            color: var(--color-primary);
-            padding: 4px 8px;
-            border-radius: 4px;
+            font-family: var(--font-code); font-size: 0.75rem;
+            background: var(--color-primary-dim); color: var(--color-primary);
+            padding: 4px 8px; border-radius: 4px;
             border: 1px solid rgba(0, 150, 136, 0.3);
         }
 
         nav ul { display: flex; gap: 2rem; list-style: none; }
-        nav a { font-size: 0.9rem; color: var(--color-text-dim); transition: color 0.3s; font-family: var(--font-code); }
+        nav a { 
+            font-size: 1rem; color: var(--color-text-dim); 
+            transition: color 0.3s; 
+            font-family: var(--font-ui); /* RAJDHANI FOR NAV */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
         nav a:hover { color: var(--color-primary); }
 
         /* --------------------------------------------------
            HERO SECTION
            -------------------------------------------------- */
         .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; position: relative; overflow: hidden;
             background-image: 
                 linear-gradient(rgba(0, 150, 136, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 150, 136, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
         }
-
         .hero-content { position: relative; z-index: 2; max-width: 800px; opacity: 0; }
-        .hero h1 { font-size: clamp(3rem, 5vw, 5rem); margin-bottom: 1.5rem; text-shadow: 0 0 20px rgba(0, 150, 136, 0.3); }
+        .hero h1 { font-size: clamp(3rem, 6vw, 6rem); margin-bottom: 1rem; text-shadow: 0 0 20px rgba(0, 150, 136, 0.3); }
         .ai-icon { font-size: 4rem; margin-bottom: 1rem; display: inline-block; filter: drop-shadow(0 0 15px var(--color-primary)); }
-        
         .particle { position: absolute; background: var(--color-primary); border-radius: 50%; opacity: 0.3; }
 
         /* --------------------------------------------------
            LIVE TERMINAL DEMO
            -------------------------------------------------- */
-        #terminal-demo {
-            padding: 4rem 0;
-            background: #080808;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
+        #terminal-demo { padding: 4rem 0; background: #080808; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .terminal-window {
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 2rem;
-            font-family: var(--font-code);
-            max-width: 800px;
-            margin: 0 auto;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            position: relative;
+            background: rgba(0,0,0,0.8); border: 1px solid #333; border-radius: 8px;
+            padding: 2rem; font-family: var(--font-code); max-width: 800px;
+            margin: 0 auto; box-shadow: 0 0 30px rgba(0,0,0,0.5); position: relative;
             min-height: 250px;
         }
-
         .terminal-header {
-            position: absolute;
-            top: 0; left: 0; width: 100%;
-            height: 25px;
-            background: #1a1a1a;
-            border-bottom: 1px solid #333;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            align-items: center;
-            padding-left: 10px;
-            gap: 5px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 25px;
+            background: #1a1a1a; border-bottom: 1px solid #333; border-radius: 8px 8px 0 0;
+            display: flex; align-items: center; padding-left: 10px; gap: 5px;
         }
-
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
         .dot.red { background: #ff5f56; }
         .dot.yellow { background: #ffbd2e; }
         .dot.green { background: #27c93f; }
-
         .terminal-body { margin-top: 15px; color: #ccc; font-size: 0.9rem; }
         .user-line { color: #fff; margin-bottom: 10px; }
         .system-line { color: var(--color-primary); margin-bottom: 10px; }
@@ -244,51 +214,31 @@
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* --------------------------------------------------
-           FEATURES (GLOW & GLASS)
+           FEATURES
            -------------------------------------------------- */
         section { padding: 8rem 0; }
-
         .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem; margin-top: 4rem;
         }
-
-        /* UPDATED GLOW EFFECTS */
         .feature-card {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(10px);
-            padding: 2.5rem;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            
-            /* The Base Glow (Subtle) */
+            background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px);
+            padding: 2.5rem; border-radius: 12px; position: relative; overflow: hidden;
             border: 1px solid rgba(0, 150, 136, 0.3);
-            box-shadow: 
-                0 0 10px rgba(0, 150, 136, 0.05),
-                inset 0 0 20px rgba(0, 150, 136, 0.05);
-            
+            box-shadow: 0 0 10px rgba(0, 150, 136, 0.05), inset 0 0 20px rgba(0, 150, 136, 0.05);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
         .feature-card:hover {
             transform: translateY(-5px);
-            /* The Hover Glow (Intense) */
             border-color: rgba(0, 150, 136, 0.8);
-            box-shadow: 
-                0 0 30px rgba(0, 150, 136, 0.3),
-                inset 0 0 20px rgba(0, 150, 136, 0.1);
+            box-shadow: 0 0 30px rgba(0, 150, 136, 0.3), inset 0 0 20px rgba(0, 150, 136, 0.1);
         }
-
         .feature-card h3 {
-            color: var(--color-primary);
-            font-family: var(--font-code);
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-            text-shadow: 0 0 5px rgba(0, 150, 136, 0.4); /* Text glow */
+            color: var(--color-primary); font-family: var(--font-ui);
+            font-weight: 700; margin-bottom: 1rem; font-size: 1.5rem; /* Larger headers */
+            text-shadow: 0 0 5px rgba(0, 150, 136, 0.4);
         }
+        .feature-card p { font-size: 1.1rem; }
 
         /* --------------------------------------------------
            DERMATOLOGICAL MAPPING
@@ -298,88 +248,49 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .mapping-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            gap: 4rem;
-        }
-
+        .mapping-container { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; }
         .scanner-visual {
-            position: relative;
-            width: 100%;
-            height: 400px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 150, 136, 0.2);
-            border-radius: 8px;
+            position: relative; width: 100%; height: 400px;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 150, 136, 0.2); border-radius: 8px;
         }
-
         .scan-line {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 2px;
-            background: var(--color-primary);
-            box-shadow: 0 0 15px var(--color-primary);
-            z-index: 5;
-            opacity: 0.8;
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--color-primary); box-shadow: 0 0 15px var(--color-primary);
+            z-index: 5; opacity: 0.8;
         }
-
         .skin-layer-svg { width: 80%; height: 80%; filter: drop-shadow(0 0 5px rgba(0, 150, 136, 0.3)); }
+        
         .data-feed { font-family: var(--font-code); }
-
         .feed-item {
-            background: rgba(255, 255, 255, 0.03);
-            margin-bottom: 1rem;
-            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03); margin-bottom: 1rem; padding: 1.5rem;
             border-left: 2px solid var(--color-primary);
-            display: flex;
-            justify-content: space-between;
-            opacity: 0; 
+            display: flex; justify-content: space-between; opacity: 0; 
         }
-
         .feed-label { color: var(--color-primary); font-weight: 700; }
         .feed-value { color: var(--color-text-dim); }
 
         /* --------------------------------------------------
            TEXT SECTIONS
            -------------------------------------------------- */
-        .text-section p { max-width: 700px; margin: 0 auto 1.5rem auto; font-size: 1.1rem; line-height: 1.8; }
-        
+        .text-section p { max-width: 700px; margin: 0 auto 1.5rem auto; font-size: 1.15rem; line-height: 1.8; }
         .disclaimer-box {
-            border: 1px solid #cf6679;
-            background: rgba(207, 102, 121, 0.1);
-            padding: 1rem;
-            color: #cf6679;
-            font-family: var(--font-code);
-            font-size: 0.9rem;
-            max-width: 700px;
-            margin: 2rem auto;
-            text-align: center;
+            border: 1px solid #cf6679; background: rgba(207, 102, 121, 0.1);
+            padding: 1rem; color: #cf6679; font-family: var(--font-code);
+            font-size: 0.9rem; max-width: 700px; margin: 2rem auto; text-align: center;
         }
-
         .privacy-box {
-            border: 1px solid var(--color-primary);
-            background: rgba(0, 150, 136, 0.05);
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: left;
-            border-radius: 8px;
+            border: 1px solid var(--color-primary); background: rgba(0, 150, 136, 0.05);
+            padding: 2rem; max-width: 800px; margin: 0 auto; text-align: left; border-radius: 8px;
         }
-
         .protocol-item {
             display: flex; align-items: flex-start; gap: 1rem;
-            margin-bottom: 1.5rem; padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .protocol-item:last-child { border-bottom: none; margin-bottom: 0; }
         .protocol-icon { font-size: 1.5rem; color: var(--color-primary); }
         .protocol-title { color: #fff; font-weight: 700; font-family: var(--font-code); margin-bottom: 0.5rem; display: block; }
-        .protocol-desc { font-size: 0.9rem; color: var(--color-text-dim); margin: 0; }
+        .protocol-desc { font-size: 1rem; color: var(--color-text-dim); margin: 0; }
 
         footer {
             padding: 3rem 0; border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -444,7 +355,6 @@
     <section id="terminal-demo">
         <div class="container">
             <h2 class="cipher-text" data-value="Terminal View // Live Session">Terminal View // Live Session</h2>
-            
             <div class="terminal-window">
                 <div class="terminal-header">
                     <div class="dot red"></div>
@@ -605,7 +515,7 @@
             anime({ targets: '.hero-content', opacity: [0, 1], translateY: [50, 0], duration: 1000, delay: 200, easing: 'easeOutExpo' });
         }
 
-        // 3. DECRYPTION EFFECT (New Feature)
+        // 3. DECRYPTION EFFECT
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
         const decryptElements = document.querySelectorAll('.cipher-text');
 
@@ -619,7 +529,7 @@
         }, { threshold: 0.5 });
 
         decryptElements.forEach(el => {
-            el.innerText = el.dataset.value.split("").map(() => letters[Math.floor(Math.random() * 26)]).join(""); // Scramble initially
+            el.innerText = el.dataset.value.split("").map(() => letters[Math.floor(Math.random() * 26)]).join(""); 
             decryptObserver.observe(el);
         });
 
@@ -640,7 +550,7 @@
                     clearInterval(interval);
                 }
                 
-                iterations += 1/2; // Controls speed (smaller = slower)
+                iterations += 1/2; 
             }, 30);
         }
 
