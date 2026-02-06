@@ -20,12 +20,12 @@
             --color-primary-dim: rgba(0, 150, 136, 0.1);
             --color-secondary: #004d61;     
             --color-text-main: #e0e0e0;
-            --color-text-dim: #94a3b8; /* Slightly lighter for Rajdhani readability */
+            --color-text-dim: #94a3b8;
             
-            /* NEW FONT STACK */
-            --font-display: 'Orbitron', sans-serif;  /* For Logo/H1 */
-            --font-ui: 'Rajdhani', sans-serif;       /* For Body/Text */
-            --font-code: 'JetBrains Mono', monospace; /* For Terminal */
+            /* FONT STACK */
+            --font-display: 'Orbitron', sans-serif;
+            --font-ui: 'Rajdhani', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
             
             --cursor-size: 20px;
         }
@@ -42,8 +42,8 @@
         body {
             background-color: var(--color-bg);
             color: var(--color-text-main);
-            font-family: var(--font-ui); /* Default to Tech UI font */
-            font-size: 18px; /* Bumped up slightly as Rajdhani is condensed */
+            font-family: var(--font-ui);
+            font-size: 18px;
             font-weight: 500;
             overflow-x: hidden;
             line-height: 1.6;
@@ -104,7 +104,7 @@
         }
         
         h2 {
-            font-size: 3rem; /* Larger for Rajdhani */
+            font-size: 3rem;
             margin-bottom: 2rem;
             text-align: center;
             min-height: 3.5rem; 
@@ -121,7 +121,7 @@
             background: rgba(0, 150, 136, 0.1);
             border: 1px solid var(--color-primary);
             color: var(--color-primary);
-            font-family: var(--font-code); /* Keep buttons technical */
+            font-family: var(--font-code);
             font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
             position: relative; overflow: hidden;
             transition: all 0.3s ease;
@@ -148,7 +148,7 @@
         .header-inner { display: flex; justify-content: space-between; align-items: center; }
         
         .logo { 
-            font-family: var(--font-display); /* ORBITRON FOR LOGO */
+            font-family: var(--font-display);
             font-weight: 700; font-size: 1.5rem; 
             display: flex; align-items: center; gap: 10px; 
             letter-spacing: 0.1em;
@@ -165,7 +165,7 @@
         nav a { 
             font-size: 1rem; color: var(--color-text-dim); 
             transition: color 0.3s; 
-            font-family: var(--font-ui); /* RAJDHANI FOR NAV */
+            font-family: var(--font-ui);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -235,13 +235,13 @@
         }
         .feature-card h3 {
             color: var(--color-primary); font-family: var(--font-ui);
-            font-weight: 700; margin-bottom: 1rem; font-size: 1.5rem; /* Larger headers */
+            font-weight: 700; margin-bottom: 1rem; font-size: 1.5rem;
             text-shadow: 0 0 5px rgba(0, 150, 136, 0.4);
         }
         .feature-card p { font-size: 1.1rem; }
 
         /* --------------------------------------------------
-           DERMATOLOGICAL MAPPING
+           DERMATOLOGICAL MAPPING (UPDATED)
            -------------------------------------------------- */
         .mapping-section {
             background: radial-gradient(circle at center, #111 0%, #000 100%);
@@ -249,17 +249,35 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         .mapping-container { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; }
+        
         .scanner-visual {
             position: relative; width: 100%; height: 400px;
             display: flex; justify-content: center; align-items: center;
-            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 150, 136, 0.2); border-radius: 8px;
+            background: #000; /* Solid black to support the image */
+            border: 1px solid rgba(0, 150, 136, 0.2); border-radius: 8px;
+            overflow: hidden; /* Ensures image and scan line stay inside */
         }
+        
+        .scanner-image {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.7; /* Dim it slightly for the "Dark OS" feel */
+            filter: brightness(0.8) contrast(1.1); /* Enhance contrast for tech look */
+            position: relative;
+            z-index: 1;
+        }
+
         .scan-line {
             position: absolute; top: 0; left: 0; width: 100%; height: 2px;
             background: var(--color-primary); box-shadow: 0 0 15px var(--color-primary);
-            z-index: 5; opacity: 0.8;
+            z-index: 5; opacity: 0.9;
         }
-        .skin-layer-svg { width: 80%; height: 80%; filter: drop-shadow(0 0 5px rgba(0, 150, 136, 0.3)); }
+        
+        .scanner-label {
+            position: absolute; bottom: 10px; left: 10px; 
+            font-family: var(--font-code); font-size: 0.7rem; color: var(--color-primary);
+            z-index: 6; background: rgba(0,0,0,0.8); padding: 4px 8px; border-radius: 4px;
+        }
         
         .data-feed { font-family: var(--font-code); }
         .feed-item {
@@ -391,17 +409,10 @@
         <div class="container mapping-container">
             <div class="scanner-visual">
                 <div class="scan-line"></div>
-                <svg class="skin-layer-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20,100 Q100,20 180,100" stroke="#009688" stroke-width="2" fill="none" />
-                    <path d="M20,120 Q100,40 180,120" stroke="#004d61" stroke-width="2" stroke-dasharray="5,5" fill="none" />
-                    <path d="M20,140 Q100,60 180,140" stroke="#333" stroke-width="2" fill="none" />
-                    <circle cx="60" cy="80" r="4" fill="#009688" class="data-point" />
-                    <circle cx="100" cy="50" r="4" fill="#009688" class="data-point" />
-                    <circle cx="140" cy="80" r="4" fill="#009688" class="data-point" />
-                </svg>
-                <div style="position: absolute; bottom: 10px; left: 10px; font-family: var(--font-code); font-size: 0.7rem; color: var(--color-primary);">
-                    SCANNING ARRAY ACTIVE...
-                </div>
+                <img src="https://static.vecteezy.com/system/resources/previews/028/240/438/original/skin-anatomy-human-normal-skin-dermis-epidermis-adipose-layers-recent-biology-infographic-vector.jpg" 
+                     alt="Skin Anatomy Diagram" 
+                     class="scanner-image">
+                <div class="scanner-label">SCANNING ARRAY ACTIVE...</div>
             </div>
 
             <div class="data-feed">
