@@ -29,7 +29,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            cursor: default; /* Custom cursor logic below */
+            cursor: default;
         }
 
         html { scroll-behavior: smooth; }
@@ -441,8 +441,7 @@
                 Built on the Gemini API, it serves as a proof-of-concept for automated preliminary triage.
             </p>
             <p style="color: var(--color-primary); font-family: var(--font-code); margin-top: 1rem;">
-                > LEAD DEVELOPER: MANSI SRIVASTAVA<br>
-                > CO-DEVELOPER: [ATOMICA]
+                > LEAD DEVELOPER: MANSI SRIVASTAVA
             </p>
         </div>
     </section>
@@ -527,13 +526,14 @@
                 });
             });
 
-            // 4. Scanner Line Animation (Looping)
+            // 4. UPDATED: Scanner Line Animation (Yo-Yo Effect)
             anime({
                 targets: '.scan-line',
                 top: ['0%', '100%'],
                 easing: 'linear',
                 duration: 2000,
-                loop: true
+                loop: true,
+                direction: 'alternate' // This makes it go Down -> Up -> Down
             });
 
             // 5. Data Points Pulsing
