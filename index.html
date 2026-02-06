@@ -417,5 +417,93 @@
             <!-- END OF FOOTER UPDATE -->
         </div>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<script>
+    // 1. Page Load Entrance Animation
+    // We target the logo, nav links, hero text, and buttons to stagger in
+    window.onload = () => {
+        const tl = anime.timeline({
+            easing: 'easeOutExpo',
+            duration: 1000
+        });
+
+        tl
+        .add({
+            targets: '.header-content',
+            translateY: [-50, 0],
+            opacity: [0, 1],
+            delay: 200
+        })
+        .add({
+            targets: '.hero-content h1, .hero-content p, .hero-content .btn',
+            translateY: [30, 0],
+            opacity: [0, 1],
+            delay: anime.stagger(150) // Each element enters slightly after the previous
+        }, '-=500') // Start this 500ms before the previous animation ends
+        .add({
+            targets: '#features div',
+            scale: [0.9, 1],
+            opacity: [0, 1],
+            delay: anime.stagger(100)
+        }, '-=400');
+    };
+
+    // 2. Floating Animation for the AI Icon
+    // Replaces the CSS pulse with a smoother Anime.js loop
+    anime({
+        targets: '.ai-icon',
+        translateY: [-10, 10],
+        direction: 'alternate',
+        loop: true,
+        duration: 2000,
+        easing: 'easeInOutSine'
+    });
+
+    // 3. Interactive Hover Effects for Feature Cards
+    const cards = document.querySelectorAll('#features > div > div');
+
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            anime({
+                targets: card,
+                scale: 1.05,
+                boxShadow: '0 0 30px rgba(0, 150, 136, 0.3)',
+                duration: 400,
+                easing: 'easeOutCubic'
+            });
+        });
+
+        card.addEventListener('mouseleave', () => {
+            anime({
+                targets: card,
+                scale: 1.0,
+                boxShadow: '0 0 15px rgba(0, 0, 0, 0.5)',
+                duration: 400,
+                easing: 'easeOutCubic'
+            });
+        });
+    });
+
+    // 4. Smooth Button Pulse on Hover
+    const primaryBtn = document.querySelector('.btn-primary');
+    primaryBtn.addEventListener('mouseenter', () => {
+        anime({
+            targets: primaryBtn,
+            letterSpacing: ['0.08em', '0.15em'],
+            duration: 300,
+            easing: 'easeOutQuad'
+        });
+    });
+    
+    primaryBtn.addEventListener('mouseleave', () => {
+        anime({
+            targets: primaryBtn,
+            letterSpacing: '0.08em',
+            duration: 300,
+            easing: 'easeOutQuad'
+        });
+    });
+</script>
 </body>
 </html>
