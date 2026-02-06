@@ -26,7 +26,6 @@
             --cursor-size: 20px;
         }
 
-        /* Hiding default cursor */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -71,7 +70,6 @@
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
 
-        /* Hover State for Cursor */
         body.hovering .cursor-outline {
             width: 40px;
             height: 40px;
@@ -99,7 +97,7 @@
         .boot-text {
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
-            opacity: 0; /* Hidden initially */
+            opacity: 0;
         }
 
         .loader-line {
@@ -170,7 +168,7 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transform: translateY(-100%); /* Hidden initially */
+            transform: translateY(-100%);
         }
 
         .header-inner { display: flex; justify-content: space-between; align-items: center; }
@@ -202,7 +200,6 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            /* Grid Background */
             background-image: 
                 linear-gradient(rgba(0, 150, 136, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 150, 136, 0.03) 1px, transparent 1px);
@@ -219,7 +216,7 @@
 
         .ai-icon { font-size: 4rem; margin-bottom: 1rem; display: inline-block; filter: drop-shadow(0 0 15px var(--color-primary)); }
 
-        /* Floating particles */
+        /* Background Particles */
         .particle {
             position: absolute;
             background: var(--color-primary);
@@ -228,7 +225,7 @@
         }
 
         /* --------------------------------------------------
-           LIVE TERMINAL DEMO (New Feature)
+           LIVE TERMINAL DEMO
            -------------------------------------------------- */
         #terminal-demo {
             padding: 4rem 0;
@@ -246,6 +243,7 @@
             margin: 0 auto;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
             position: relative;
+            min-height: 250px; /* Ensure height for content */
         }
 
         .terminal-header {
@@ -266,7 +264,7 @@
         .dot.yellow { background: #ffbd2e; }
         .dot.green { background: #27c93f; }
 
-        .terminal-body { margin-top: 15px; min-height: 150px; color: #ccc; font-size: 0.9rem; }
+        .terminal-body { margin-top: 15px; color: #ccc; font-size: 0.9rem; }
         .user-line { color: #fff; margin-bottom: 10px; }
         .system-line { color: var(--color-primary); margin-bottom: 10px; }
         .typing-cursor::after { content: '█'; animation: blink 1s infinite; }
@@ -358,7 +356,7 @@
         .feed-value { color: var(--color-text-dim); }
 
         /* --------------------------------------------------
-           FOOTER & TEXT
+           TEXT SECTIONS (Privacy & TOS)
            -------------------------------------------------- */
         .text-section p {
             max-width: 700px; margin: 0 auto 1.5rem auto;
@@ -377,6 +375,30 @@
             text-align: center;
         }
 
+        .privacy-box {
+            border: 1px solid var(--color-primary);
+            background: rgba(0, 150, 136, 0.05);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .protocol-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 1.5rem;
+        }
+
+        .protocol-item:last-child { border-bottom: none; margin-bottom: 0; }
+        .protocol-icon { font-size: 1.5rem; color: var(--color-primary); }
+        .protocol-title { color: #fff; font-weight: 700; font-family: var(--font-code); margin-bottom: 0.5rem; display: block; }
+        .protocol-desc { font-size: 0.9rem; color: var(--color-text-dim); margin: 0; }
+
         footer {
             padding: 3rem 0;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -390,7 +412,7 @@
             .mapping-container { grid-template-columns: 1fr; }
             .header-inner { flex-direction: column; gap: 1rem; }
             nav ul { gap: 1rem; font-size: 0.8rem; }
-            * { cursor: auto !important; } /* Restore cursor on mobile */
+            * { cursor: auto !important; }
             .cursor-dot, .cursor-outline { display: none; }
         }
     </style>
@@ -419,7 +441,7 @@
                     <li><a href="#terminal-demo" class="hover-trigger">LIVE_DEMO</a></li>
                     <li><a href="#features" class="hover-trigger">MODULES</a></li>
                     <li><a href="#mapping" class="hover-trigger">DIAGNOSTICS</a></li>
-                    <li><a href="#about" class="hover-trigger">ABOUT</a></li>
+                    <li><a href="#privacy" class="hover-trigger">PRIVACY</a></li>
                 </ul>
             </nav>
         </div>
@@ -443,6 +465,8 @@
 
     <section id="terminal-demo">
         <div class="container">
+            <h2>Terminal View // Live Session</h2>
+            
             <div class="terminal-window">
                 <div class="terminal-header">
                     <div class="dot red"></div>
@@ -523,10 +547,41 @@
         </div>
     </section>
 
+    <section id="privacy" class="text-section" style="background: #080808;">
+        <div class="container">
+            <h2>Privacy Protocol</h2>
+            <p style="text-align: center;">We operate on a strict Zero-Retention Policy. Your biometric data is processed ephemerally.</p>
+            
+            <div class="privacy-box hover-trigger">
+                <div class="protocol-item">
+                    <div class="protocol-icon">🔒</div>
+                    <div>
+                        <span class="protocol-title">END-TO-END ENCRYPTION</span>
+                        <p class="protocol-desc">All data transmission between client and Gemini API nodes is encrypted via TLS 1.3 protocols.</p>
+                    </div>
+                </div>
+                <div class="protocol-item">
+                    <div class="protocol-icon">🗑️</div>
+                    <div>
+                        <span class="protocol-title">EPHEMERAL PROCESSING</span>
+                        <p class="protocol-desc">Images are processed in RAM only. No images are written to disk or stored in persistent databases.</p>
+                    </div>
+                </div>
+                <div class="protocol-item">
+                    <div class="protocol-icon">👤</div>
+                    <div>
+                        <span class="protocol-title">ANONYMIZED QUERYING</span>
+                        <p class="protocol-desc">Personal identifiers are stripped before API transmission. We do not track IP addresses.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="tos" class="text-section" style="background: #0f0f0f;">
         <div class="container" style="text-align: center;">
             <h2>Terms of Use</h2>
-            <div class="disclaimer-box">WARNING: NON-DIAGNOSTIC TOOL. Educational data only.</div>
+            <div class="disclaimer-box hover-trigger">WARNING: NON-DIAGNOSTIC TOOL. Educational data only.</div>
             <p style="font-size: 0.9rem;">Analysis may contain hallucinations. Do not rely for critical decisions.</p>
         </div>
     </section>
@@ -534,107 +589,59 @@
     <footer>
         <div class="container">
             <p>DERMATO SYSTEM LOG // 2026</p>
-            <p style="margin-top: 0.5rem; opacity: 0.5;"><a href="#" class="hover-trigger">Privacy Protocol</a> | <a href="#" class="hover-trigger">Terms</a></p>
+            <p style="margin-top: 0.5rem; opacity: 0.5;"><a href="#privacy" class="hover-trigger">Privacy Protocol</a> | <a href="#tos" class="hover-trigger">Terms</a></p>
         </div>
     </footer>
 
     <script>
-        // --------------------------------------------------
-        // 1. CUSTOM CURSOR LOGIC
-        // --------------------------------------------------
+        // 1. CUSTOM CURSOR
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
 
         window.addEventListener('mousemove', (e) => {
             const posX = e.clientX;
             const posY = e.clientY;
-
-            // Dot follows instantly
             cursorDot.style.left = `${posX}px`;
             cursorDot.style.top = `${posY}px`;
-
-            // Outline follows with slight delay (animation handled by CSS transition usually, or simple JS)
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
+            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
         });
 
-        // Add hover effect for links and buttons
-        const hoverTriggers = document.querySelectorAll('.hover-trigger, a, button');
+        const hoverTriggers = document.querySelectorAll('.hover-trigger, a, button, .privacy-box');
         hoverTriggers.forEach(trigger => {
-            trigger.addEventListener('mouseenter', () => {
-                document.body.classList.add('hovering');
-            });
-            trigger.addEventListener('mouseleave', () => {
-                document.body.classList.remove('hovering');
-            });
+            trigger.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            trigger.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
         });
 
-        // --------------------------------------------------
-        // 2. BOOT SEQUENCE & INITIALIZATION
-        // --------------------------------------------------
+        // 2. BOOT SEQUENCE
         window.onload = () => {
-            const bootTexts = document.querySelectorAll('.boot-text');
-            const bootTimeline = anime.timeline({
-                easing: 'easeOutExpo'
-            });
-
-            // Animate Boot Text
+            const bootTimeline = anime.timeline({ easing: 'easeOutExpo' });
             bootTimeline
-            .add({
-                targets: '.boot-text',
-                opacity: [0, 1],
-                translateY: [20, 0],
-                delay: anime.stagger(400)
-            })
-            .add({
-                targets: '.loader-line',
-                width: ['0%', '100%'],
-                duration: 800,
-                easing: 'easeInOutQuad'
-            })
-            .add({
-                targets: '#boot-screen',
-                opacity: 0,
-                duration: 800,
-                complete: function(anim) {
-                    document.querySelector('#boot-screen').style.display = 'none';
-                    startMainAnimations(); // Trigger main site entry
-                    startTerminal();       // Start the typing demo
-                }
-            }, '+=200');
+            .add({ targets: '.boot-text', opacity: [0, 1], translateY: [20, 0], delay: anime.stagger(400) })
+            .add({ targets: '.loader-line', width: ['0%', '100%'], duration: 800, easing: 'easeInOutQuad' })
+            .add({ targets: '#boot-screen', opacity: 0, duration: 800, complete: function() {
+                document.querySelector('#boot-screen').style.display = 'none';
+                startMainAnimations();
+                startTerminalLoop(); // New Iterative Loop
+            }}, '+=200');
         };
 
         function startMainAnimations() {
-            // Header Slide Down
-            anime({
-                targets: 'header',
-                translateY: ['-100%', '0%'],
-                duration: 800,
-                easing: 'easeOutExpo'
-            });
-
-            // Hero Fade In
-            anime({
-                targets: '.hero-content',
-                opacity: [0, 1],
-                translateY: [50, 0],
-                duration: 1000,
-                delay: 200,
-                easing: 'easeOutExpo'
-            });
+            anime({ targets: 'header', translateY: ['-100%', '0%'], duration: 800, easing: 'easeOutExpo' });
+            anime({ targets: '.hero-content', opacity: [0, 1], translateY: [50, 0], duration: 1000, delay: 200, easing: 'easeOutExpo' });
         }
 
-        // --------------------------------------------------
-        // 3. LIVE TERMINAL SIMULATION
-        // --------------------------------------------------
-        async function typeWriter(text, elementClass, delay = 30) {
+        // 3. ITERATIVE TERMINAL DEMO
+        const scenarios = [
+            { user: "I have a red, itchy patch on my forearm.", result: "Possible Contact Dermatitis detected. Recommend keeping area dry and applying cool compress." },
+            { user: "This mole on my shoulder changed shape.", result: "Asymmetry detected. High priority: Please consult a dermatologist for a biopsy immediately." },
+            { user: "Dry scaling skin on elbows and knees.", result: "Visual markers align with Psoriasis. Recommend moisturizing and avoiding triggers." }
+        ];
+
+        async function typeWriter(text, elementClass, delay = 20) {
             const output = document.getElementById('terminal-output');
             const line = document.createElement('div');
             line.className = elementClass;
             output.appendChild(line);
-            
             for (let i = 0; i < text.length; i++) {
                 line.textContent += text.charAt(i);
                 line.classList.add('typing-cursor');
@@ -643,70 +650,69 @@
             line.classList.remove('typing-cursor');
         }
 
-        async function startTerminal() {
-            await new Promise(r => setTimeout(r, 1000));
-            await typeWriter("> USER: I have a red, itchy patch on my forearm.", "user-line");
-            await new Promise(r => setTimeout(r, 800));
-            await typeWriter("> SYSTEM: Analyzing image data...", "system-line");
-            await new Promise(r => setTimeout(r, 1500)); // Fake processing time
-            await typeWriter("> SYSTEM: [Result]: Possible Contact Dermatitis detected. Recommend keeping area dry and applying cool compress. Consult dermatologist if symptoms persist.", "system-line", 20);
+        async function startTerminalLoop() {
+            let i = 0;
+            while(true) {
+                const scenario = scenarios[i % scenarios.length];
+                // Clear previous terminal content
+                document.getElementById('terminal-output').innerHTML = '';
+                
+                await new Promise(r => setTimeout(r, 500));
+                await typeWriter("> USER: " + scenario.user, "user-line");
+                await new Promise(r => setTimeout(r, 800));
+                await typeWriter("> SYSTEM: Analyzing image data...", "system-line");
+                await new Promise(r => setTimeout(r, 1200));
+                await typeWriter("> SYSTEM: [Result]: " + scenario.result, "system-line", 10);
+                
+                // Pause before next iteration
+                await new Promise(r => setTimeout(r, 4000));
+                i++;
+            }
         }
 
-        // --------------------------------------------------
-        // 4. ANIMATION LOOPS (Scanner, Particles, etc)
-        // --------------------------------------------------
-        
-        // Scanner Line Yo-Yo
-        anime({
-            targets: '.scan-line',
-            top: ['0%', '100%'],
-            easing: 'linear',
-            duration: 2500,
-            loop: true,
-            direction: 'alternate'
-        });
+        // 4. ANIMATION LOOPS (High Velocity Particles)
+        anime({ targets: '.scan-line', top: ['0%', '100%'], easing: 'linear', duration: 2500, loop: true, direction: 'alternate' });
 
-        // Floating Particles (Background)
+        // Generate HIGH DENSITY particles
         const particleContainer = document.getElementById('particles');
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 80; i++) { // Increased to 80
             const p = document.createElement('div');
             p.classList.add('particle');
-            p.style.width = Math.random() * 5 + 'px';
+            p.style.width = Math.random() * 4 + 'px';
             p.style.height = p.style.width;
             p.style.left = Math.random() * 100 + 'vw';
             p.style.top = Math.random() * 100 + 'vh';
             particleContainer.appendChild(p);
         }
 
+        // HIGH VELOCITY animation
         anime({
             targets: '.particle',
-            translateY: function() { return anime.random(-50, 50); },
-            translateX: function() { return anime.random(-50, 50); },
-            opacity: [0.1, 0.4],
-            easing: 'easeInOutSine',
-            duration: 3000,
-            delay: anime.stagger(200),
+            translateY: function() { return anime.random(-100, 100); }, // Increased range
+            translateX: function() { return anime.random(-100, 100); },
+            opacity: [0.1, 0.5],
+            easing: 'linear', // Linear for constant speed feeling
+            duration: function() { return anime.random(1000, 2000); }, // Fast duration (1-2s)
+            delay: anime.stagger(50),
             loop: true,
             direction: 'alternate'
         });
 
-        // Data Feed Scroll Reveal
+        // Intersection Observers
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    anime({
-                        targets: '.feed-item',
-                        translateX: [-20, 0],
-                        opacity: [0, 1],
-                        delay: anime.stagger(150),
-                        easing: 'easeOutQuad'
-                    });
-                    observer.unobserve(entry.target);
+                    const items = entry.target.querySelectorAll('.feed-item, .protocol-item');
+                    if (items.length) {
+                        anime({ targets: items, translateX: [-20, 0], opacity: [0, 1], delay: anime.stagger(150), easing: 'easeOutQuad' });
+                        observer.unobserve(entry.target);
+                    }
                 }
             });
         }, { threshold: 0.5 });
         
         observer.observe(document.querySelector('.data-feed'));
+        observer.observe(document.querySelector('.privacy-box'));
 
     </script>
 </body>
