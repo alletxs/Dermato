@@ -3,507 +3,568 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dermato | AI Dermatology Chatbot</title>
-    <!-- Use the Inter font for a modern, clean look -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <title>Dermato | AI Dermatology Interface</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
     <style>
-        /*
-            Dermato AI Chatbot Homepage CSS
-            Theme: Dark Mode
-            Primary Color: #009688 (Teal/Sea Green - for accents, buttons)
-            Secondary/Dark Color: #004d61 (Deep Teal/Navy - for some backgrounds/highlights)
-            Background/Text Colors: Optimized for readability in dark mode.
-        */
-
+        /* --------------------------------------------------
+           THEME & VARIABLES (Dark Medical OS Theme)
+           -------------------------------------------------- */
         :root {
-            /* Color Variables */
-            --color-primary: #009688;         /* Accent color (Teal) */
-            --color-secondary: #004d61;       /* Dark accent/highlight */
-            --color-background-dark: #121212; /* Very dark background (Standard Material Dark) */
-            --color-surface-dark: #1e1e1e;    /* Slightly lighter surface for cards/sections */
-            --color-text-light: #e0e0e0;      /* Light text for body copy */
-            --color-text-dimmed: #a0a0a0;     /* Dimmed/subtle text */
-            --color-error: #cf6679;           /* Accessible error color */
-
-            /* Font Variables - Using Inter as the primary modern font */
-            --font-family-primary: 'Inter', sans-serif;
+            --color-bg: #0a0a0a;
+            --color-surface: #141414;
+            --color-primary: #009688;       /* Teal */
+            --color-primary-dim: rgba(0, 150, 136, 0.1);
+            --color-secondary: #004d61;     /* Deep Teal */
+            --color-text-main: #e0e0e0;
+            --color-text-dim: #888888;
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
         }
 
-        /* --------------------
-           BASE STYLES
-           -------------------- */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            border-radius: 6px; /* Applying subtle rounded corners everywhere */
+            cursor: default; /* Custom cursor logic below */
         }
 
-        html {
-            /* Smoother scrolling for navigation links */
-            scroll-behavior: smooth;
-            font-size: 16px; /* Base for REM units */
-        }
+        html { scroll-behavior: smooth; }
 
         body {
-            background-color: var(--color-background-dark);
-            color: var(--color-text-light);
-            font-family: var(--font-family-primary);
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            font-family: var(--font-ui);
+            overflow-x: hidden;
             line-height: 1.6;
-            min-height: 100vh; /* Ensure full viewport height */
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden; /* Prevent horizontal scroll on mobile */
         }
 
-        /* --------------------
+        /* --------------------------------------------------
            TYPOGRAPHY
-           -------------------- */
-        h1, h2, h3, h4 {
+           -------------------------------------------------- */
+        h1, h2, h3 {
             font-weight: 800;
-            line-height: 1.2;
-            color: var(--color-text-light);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem); /* Responsive H1 */
-            margin-bottom: 1rem;
-            color: var(--color-primary); /* Highlight the main heading */
+            letter-spacing: -0.02em;
         }
 
         h2 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            margin-top: 2rem;
-            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(to right, #fff, var(--color-text-dim));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p { color: var(--color-text-dim); }
+
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+
+        /* --------------------------------------------------
+           COMPONENTS
+           -------------------------------------------------- */
+        
+        /* Custom "Tech" Buttons */
+        .btn {
             display: inline-block;
-            border-bottom: 2px solid var(--color-secondary); /* Subtle separation */
-            padding-bottom: 0.5rem;
-        }
-
-        p {
-            margin-bottom: 1rem;
-            color: var(--color-text-light);
-        }
-
-        a {
+            padding: 1rem 2.5rem;
+            background: rgba(0, 150, 136, 0.1);
+            border: 1px solid var(--color-primary);
             color: var(--color-primary);
-            text-decoration: none;
-            transition: color 0.3s ease;
+            font-family: var(--font-code);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        a:hover {
-            color: #4ddbff; /* Lighter shade of teal/cyan on hover */
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: var(--color-primary);
+            transition: transform 0.4s ease;
+            z-index: -1;
         }
 
-        /* --------------------
-           LAYOUT & CONTAINERS
-           -------------------- */
+        .btn:hover {
+            color: #000;
+            box-shadow: 0 0 20px var(--color-primary);
+        }
+
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+
         .container {
-            width: 95%; /* Better width for mobile */
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem 0;
+            padding: 0 2rem;
         }
 
-        /* --------------------
-           HEADER & NAVIGATION
-           -------------------- */
+        /* --------------------------------------------------
+           HEADER
+           -------------------------------------------------- */
         header {
-            background-color: var(--color-surface-dark); /* Slightly lighter dark surface */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            padding: 1rem 0;
-            position: sticky; /* Sticky header for better UX */
+            position: fixed;
             top: 0;
-            z-index: 100;
+            width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: var(--color-primary) !important;
-            letter-spacing: -1px;
-        }
-
-        nav {
-            display: none; /* Hide nav links by default on mobile */
-        }
-        
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        nav a {
-            text-transform: uppercase;
-            font-weight: 500;
-            padding: 0.5rem 0.75rem;
-            color: var(--color-text-dimmed);
-            transition: color 0.3s ease, background-color 0.3s ease;
-        }
-
-        nav a:hover {
-            color: var(--color-primary);
-            background-color: rgba(0, 150, 136, 0.1);
-            border-radius: 4px;
-            text-decoration: none;
-        }
-
-        /* Simple flex layout for header */
-        .header-content {
+        .header-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* Responsive Navigation (Show navigation on tablet/desktop) */
-        @media (min-width: 768px) {
-            nav {
-                display: block;
-            }
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* --------------------
-           BUTTONS (Call to Action)
-           -------------------- */
-        .btn {
-            display: inline-block;
-            padding: 0.85rem 2rem;
-            border-radius: 9999px; /* Pill shape */
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            border: 2px solid transparent;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background-color: var(--color-primary);
-            color: var(--color-background-dark); /* Dark text on bright button */
-            box-shadow: 0 4px 15px rgba(0, 150, 136, 0.6);
-        }
-
-        .btn-primary:hover {
-            background-color: #00c7b3; /* Lighter primary on hover */
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 150, 136, 0.8);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
+        .status-badge {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            background: var(--color-primary-dim);
             color: var(--color-primary);
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 150, 136, 0.3);
         }
 
-        .btn-secondary:hover {
-            background-color: rgba(0, 150, 136, 0.15);
-            transform: scale(1.02);
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
         }
 
-        /* --------------------
-           SECTION STYLES
-           -------------------- */
-        section {
-            padding: 8rem 0; /* Increased vertical space for visual separation */
-            text-align: center;
+        nav a {
+            font-size: 0.9rem;
+            color: var(--color-text-dim);
+            transition: color 0.3s;
+            font-family: var(--font-code);
         }
 
-        .hero-section {
-            min-height: 85vh; /* Take up most of the viewport */
+        nav a:hover { color: var(--color-primary); }
+
+        /* --------------------------------------------------
+           HERO SECTION (Scanner Effect)
+           -------------------------------------------------- */
+        .hero {
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            /* Subtle background element */
-            background: radial-gradient(circle at center, rgba(0, 77, 97, 0.15) 0%, transparent 50%);
+            position: relative;
+            overflow: hidden;
+            /* Animated Grid Background */
+            background-image: 
+                linear-gradient(rgba(0, 150, 136, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 150, 136, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
         .hero-content {
+            position: relative;
+            z-index: 2;
             max-width: 800px;
-            padding: 1rem;
         }
 
-        /* --------------------
-           FOOTER
-           -------------------- */
-        footer {
-            margin-top: auto; /* Pushes the footer to the bottom */
-            background-color: var(--color-surface-dark);
-            color: var(--color-text-dimmed);
-            padding: 2rem 0;
-            text-align: center;
-            border-top: 1px solid var(--color-secondary);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+        .hero h1 {
+            font-size: clamp(3rem, 5vw, 5rem);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(0, 150, 136, 0.3);
         }
 
-        /* Icon for AI */
         .ai-icon {
-            font-size: 3rem;
+            font-size: 4rem;
             margin-bottom: 1rem;
-            color: var(--color-primary);
             display: inline-block;
-            animation: pulse 2s infinite ease-in-out;
+            filter: drop-shadow(0 0 15px var(--color-primary));
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
+        /* --------------------------------------------------
+           FEATURES (Glassmorphism Cards)
+           -------------------------------------------------- */
+        section { padding: 8rem 0; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
         }
 
-        /* Mobile Menu Toggle (Hidden on desktop) */
-        .menu-toggle {
-            display: block;
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card h3 {
             color: var(--color-primary);
-            font-size: 2rem;
-            cursor: pointer;
+            font-family: var(--font-code);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
         }
 
-        @media (min-width: 768px) {
-            .menu-toggle {
-                display: none;
-            }
+        /* --------------------------------------------------
+           DERMATOLOGICAL MAPPING (New Section)
+           -------------------------------------------------- */
+        .mapping-section {
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Adding a bit of glow to the logo text */
-        .logo-text {
-            text-shadow: 0 0 5px rgba(0, 150, 136, 0.5);
+        .mapping-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        /* The Scanner Visual */
+        .scanner-visual {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 150, 136, 0.2);
+            border-radius: 8px;
+        }
+
+        /* The moving line */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--color-primary);
+            box-shadow: 0 0 15px var(--color-primary);
+            z-index: 5;
+            opacity: 0.8;
+        }
+
+        .skin-layer-svg {
+            width: 80%;
+            height: 80%;
+            filter: drop-shadow(0 0 5px rgba(0, 150, 136, 0.3));
+        }
+
+        /* The Data Feed */
+        .data-feed {
+            font-family: var(--font-code);
+        }
+
+        .feed-item {
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            border-left: 2px solid var(--color-primary);
+            display: flex;
+            justify-content: space-between;
+            opacity: 0; /* Hidden initially for animation */
+        }
+
+        .feed-label { color: var(--color-primary); font-weight: 700; }
+        .feed-value { color: var(--color-text-dim); }
+
+        /* --------------------------------------------------
+           STANDARD SECTIONS (About, TOS, Privacy)
+           -------------------------------------------------- */
+        .text-section p {
+            max-width: 700px;
+            margin: 0 auto 1.5rem auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .disclaimer-box {
+            border: 1px solid #cf6679;
+            background: rgba(207, 102, 121, 0.1);
+            padding: 1rem;
+            color: #cf6679;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            max-width: 700px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        /* --------------------------------------------------
+           FOOTER
+           -------------------------------------------------- */
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            color: var(--color-text-dim);
+            text-align: center;
+        }
+
+        /* --------------------------------------------------
+           MEDIA QUERIES
+           -------------------------------------------------- */
+        @media (max-width: 768px) {
+            .mapping-container { grid-template-columns: 1fr; }
+            .header-inner { flex-direction: column; gap: 1rem; }
+            nav ul { gap: 1rem; font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header / Navigation -->
     <header>
-        <div class="container header-content">
-            <a href="#" class="logo">
-                <span class="logo-text">Dermato</span>
-            </a>
-            <nav id="main-nav">
-                <!-- START OF NAVIGATION UPDATE: Line 209 -->
+        <div class="container header-inner">
+            <div class="logo">
+                <span style="color: var(--color-primary);">DERMATO</span>
+                <span class="status-badge">SYSTEM: ONLINE</span>
+                <span class="status-badge" style="border-color: #555; color: #aaa;">USER: OPERATOR</span>
+            </div>
+            <nav>
                 <ul>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#tos">TOS</a></li>
-                    <li><a href="#privacy">Privacy</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#features">MODULES</a></li>
+                    <li><a href="#mapping">DIAGNOSTICS</a></li>
+                    <li><a href="#about">ABOUT</a></li>
+                    <li><a href="#tos">LEGAL</a></li>
                 </ul>
-                <!-- END OF NAVIGATION UPDATE -->
             </nav>
-            <div class="menu-toggle">☰</div> <!-- Placeholder for future mobile menu icon -->
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section" id="home">
-        <div class="container hero-content">
-            <div class="ai-icon">
-                <!-- Using a simple icon/emoji to represent the AI -->
-                ⚕️
-            </div>
-            <h1>Your Skin Health, Powered by AI.</h1>
-            <p class="text-dimmed" style="color: var(--color-text-dimmed); font-size: 1.25rem; max-width: 600px; margin: 0 auto 2rem;">
-                <!-- Grammar fix: "a AI chatbot" changed to "an AI chatbot" -->
-                Dermato is an AI chatbot providing instant, preliminary skin health analysis and personalized dermatological guidance, 24/7.
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="ai-icon">⚕️</div>
+            <h1>Next-Gen Skin Analysis</h1>
+            <p style="font-size: 1.25rem; margin-bottom: 2.5rem;">
+                Advanced AI-driven dermatological preliminary assessment tool. 
+                Powered by Gemini Vision architecture.
             </p>
-            <!-- Updated button structure -->
-            <a href="https://i-am-atomica.github.io/Dermato/" class="btn btn-primary" target="_blank">
-                Chat Now
+            <a href="https://i-am-atomica.github.io/Dermato/" target="_blank" class="btn">
+                Initialize Scan
             </a>
-            <!-- End of updated button structure -->
         </div>
     </section>
 
-    <!-- Placeholder Section 1: Features -->
     <section id="features">
         <div class="container">
-            <h2>Core Features</h2>
-            <div style="display: flex; gap: 20px; text-align: center; justify-content: center; margin-top: 3rem; flex-wrap: wrap;">
-                <div style="background-color: var(--color-surface-dark); padding: 2rem; width: 300px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);">
-                    <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Instant Analysis</h3>
-                    <p style="font-size: 0.9rem; color: var(--color-text-dimmed);">Upload an image and get preliminary insights in seconds.</p>
+            <h2>Core Modules</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>01 // Instant Analysis</h3>
+                    <p>Rapid visual processing algorithm designed to identify surface-level irregularities within seconds.</p>
                 </div>
-                <div style="background-color: var(--color-surface-dark); padding: 2rem; width: 300px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);">
-                    <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Personalized Chats</h3>
-                    <p style="font-size: 0.9rem; color: var(--color-text-dimmed);">Follow-up questions tailored to your specific needs and history.</p>
+                <div class="feature-card">
+                    <h3>02 // Contextual Memory</h3>
+                    <p>Conversational AI retains session history for personalized, evolving medical guidance tailored to your biology.</p>
                 </div>
-                <div style="background-color: var(--color-surface-dark); padding: 2rem; width: 300px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);">
-                    <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">Privacy Focused</h3>
-                    <p style="font-size: 0.9rem; color: var(--color-text-dimmed);">Your data is secured and handled with the utmost confidentiality.</p>
+                <div class="feature-card">
+                    <h3>03 // Encrypted Privacy</h3>
+                    <p>Ephemeral data processing ensures no permanent storage of biometric imagery. Zero-knowledge architecture.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works Section Placeholder (Added for navigation completeness) -->
-    <section id="how-it-works" style="background-color: var(--color-surface-dark);">
-        <div class="container">
-            <h2>How It Works</h2>
-            <p style="max-width: 800px; margin: 0 auto; color: var(--color-text-dimmed);">
-                Dermato utilizes advanced large language models [llm] to provide non-diagnostic, educational feedback on skin conditions.
+    <section id="mapping" class="mapping-section">
+        <div class="container mapping-container">
+            
+            <div class="scanner-visual">
+                <div class="scan-line"></div>
+                <svg class="skin-layer-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,100 Q100,20 180,100" stroke="#009688" stroke-width="2" fill="none" />
+                    <path d="M20,120 Q100,40 180,120" stroke="#004d61" stroke-width="2" stroke-dasharray="5,5" fill="none" />
+                    <path d="M20,140 Q100,60 180,140" stroke="#333" stroke-width="2" fill="none" />
+                    <circle cx="60" cy="80" r="4" fill="#009688" class="data-point" />
+                    <circle cx="100" cy="50" r="4" fill="#009688" class="data-point" />
+                    <circle cx="140" cy="80" r="4" fill="#009688" class="data-point" />
+                </svg>
+                <div style="position: absolute; bottom: 10px; left: 10px; font-family: var(--font-code); font-size: 0.7rem; color: var(--color-primary);">
+                    SCANNING ARRAY ACTIVE...
+                </div>
+            </div>
+
+            <div class="data-feed">
+                <h2>Diagnostic Feed</h2>
+                <div class="feed-item">
+                    <span class="feed-label">TEXTURE_GRADIENT</span>
+                    <span class="feed-value">ANALYZING...</span>
+                </div>
+                <div class="feed-item">
+                    <span class="feed-label">PIGMENT_DENSITY</span>
+                    <span class="feed-value">CALCULATING...</span>
+                </div>
+                <div class="feed-item">
+                    <span class="feed-label">ANOMALY_INDEX</span>
+                    <span class="feed-value">WAITING FOR INPUT</span>
+                </div>
+                <div class="feed-item">
+                    <span class="feed-label">API_LATENCY</span>
+                    <span class="feed-value">12ms [STABLE]</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="about" class="text-section">
+        <div class="container" style="text-align: center;">
+            <h2>Project Architecture</h2>
+            <p>
+                Dermato is a student-led research initiative exploring the intersection of Large Language Models (LLMs) and healthcare accessibility. 
+                Built on the Gemini API, it serves as a proof-of-concept for automated preliminary triage.
             </p>
-            <p style="margin-top: 1rem; color: var(--color-primary); font-weight: 600;">
-                This chat bot uses an API key to generate live reponses via the use of ai
+            <p style="color: var(--color-primary); font-family: var(--font-code); margin-top: 1rem;">
+                > LEAD DEVELOPER: MANSI SRIVASTAVA<br>
+                > CO-DEVELOPER: [ATOMICA]
             </p>
         </div>
     </section>
 
-    <!-- About Section Placeholder (Added for navigation completeness) -->
-    <section id="about">
-        <div class="container">
-            <h2>About Dermato</h2>
-            <p style="max-width: 800px; margin: 0 auto; color: var(--color-text-dimmed);">
-                This project prostates about applying modern AI to health education. Our goal is to create accessible, preliminary tools for skin health awareness, and marks on the assignment.
-            </p>
-            <p style="margin-top: 1rem; color: var(--color-primary); font-weight: 600;">
-                The project was founded by Mansi Srivastava
-            </p>
-        </div>
-    </section>
-
-
-    <!-- Terms of Service Placeholder Section -->
-    <section id="tos" style="background-color: var(--color-surface-dark);">
-        <div class="container">
-            <h2>Terms of Service</h2>
-            <p style="max-width: 800px; margin: 0 auto; color: var(--color-text-dimmed);">
-                By accessing Dermato, you acknowledge that this tool is a student research prototype designed for educational and informational purposes only and does not constitute professional medical advice, diagnosis, or treatment. The AI-generated analysis may contain inaccuracies; therefore, you should never rely on this service for health decisions or ignore professional medical advice because of something you have read here. The developers assume no liability for any actions taken based on the information provided. By using this service, you agree to hold the creators harmless and understand that your data is processed via third-party AI for analysis purposes only.
-            </p>
-            <p style="margin-top: 1rem; color: var(--color-primary); font-weight: 600;">
-                This is medical warning, that this bot is a student project and maybe not be 100% accurate.   
+    <section id="tos" class="text-section" style="background: #0f0f0f;">
+        <div class="container" style="text-align: center;">
+            <h2>Terms of Use</h2>
+            <div class="disclaimer-box">
+                WARNING: NON-DIAGNOSTIC TOOL.<br>
+                This system provides educational data only. It does not replace professional medical advice.
+            </div>
+            <p style="font-size: 0.9rem;">
+                By engaging the system, you acknowledge that all analysis is AI-generated and may contain hallucinations. 
+                Do not rely on this service for life-critical health decisions.
             </p>
         </div>
     </section>
 
-    <!-- Privacy Policy Placeholder Section -->
-    <section id="privacy">
-        <div class="container">
-            <h2>Privacy Policy</h2>
-            <p style="max-width: 800px; margin: 0 auto; color: var(--color-text-dimmed);">
-                Privacy Policy We respect your privacy. Dermato is a student prototype that does not permanently store your personal health data or uploaded images. However, to function, your inputs are processed by third-party AI services (Google Gemini API). By using this tool, you consent to this processing. We advise against uploading images that reveal your identity (e.g., faces) or sensitive personal details.
-            </p>
-            <p style="margin-top: 1rem; color: var(--color-primary); font-weight: 600;">
-                You may read the privacy policy of google gemini api keys.
-            </p>
-        </div>
-    </section>
-    
-    <!-- Contact Section -->
-    <section id="contact" style="background-color: var(--color-surface-dark);">
-        <div class="container">
-            <h2>Get In Touch</h2>
-            <p style="max-width: 600px; margin: 0 auto 2rem; color: var(--color-text-dimmed);">
-                As this is a student project, feel free to reach out directly with feedback or collaboration ideas!
-            </p>
-            <p style="margin-top: 1rem; color: var(--color-primary); font-size: 1.5rem; font-weight: 700;">
-                dummy-email@nobody.com
-            </p>
-            <p style="color: var(--color-text-dimmed); font-size: 0.9rem; margin-top: 0.5rem;">
-                (Powered by Team Efforts)
-            </p>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer>
         <div class="container">
-            <!-- START OF FOOTER UPDATE -->
-            <p>&copy; 2026 Dermato. All rights reserved. | <a href="#tos">Terms of Service</a> | <a href="#privacy">Privacy Policy</a></p>
-            <!-- END OF FOOTER UPDATE -->
+            <p>DERMATO SYSTEM LOG // 2026</p>
+            <p style="margin-top: 0.5rem; opacity: 0.5;">
+                <a href="#">Privacy Protocol</a> | <a href="#">Terms of Engagement</a> | <a href="mailto:dummy@email.com">Contact Ops</a>
+            </p>
         </div>
     </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
-<script>
-    // 1. Page Load Entrance Animation
-    // We target the logo, nav links, hero text, and buttons to stagger in
-    window.onload = () => {
-        const tl = anime.timeline({
-            easing: 'easeOutExpo',
-            duration: 1000
-        });
-
-        tl
-        .add({
-            targets: '.header-content',
-            translateY: [-50, 0],
-            opacity: [0, 1],
-            delay: 200
-        })
-        .add({
-            targets: '.hero-content h1, .hero-content p, .hero-content .btn',
-            translateY: [30, 0],
-            opacity: [0, 1],
-            delay: anime.stagger(150) // Each element enters slightly after the previous
-        }, '-=500') // Start this 500ms before the previous animation ends
-        .add({
-            targets: '#features div',
-            scale: [0.9, 1],
-            opacity: [0, 1],
-            delay: anime.stagger(100)
-        }, '-=400');
-    };
-
-    // 2. Floating Animation for the AI Icon
-    // Replaces the CSS pulse with a smoother Anime.js loop
-    anime({
-        targets: '.ai-icon',
-        translateY: [-10, 10],
-        direction: 'alternate',
-        loop: true,
-        duration: 2000,
-        easing: 'easeInOutSine'
-    });
-
-    // 3. Interactive Hover Effects for Feature Cards
-    const cards = document.querySelectorAll('#features > div > div');
-
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            anime({
-                targets: card,
-                scale: 1.05,
-                boxShadow: '0 0 30px rgba(0, 150, 136, 0.3)',
-                duration: 400,
-                easing: 'easeOutCubic'
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Staggered Page Entrance
+            const tl = anime.timeline({
+                easing: 'easeOutExpo',
+                duration: 1200
             });
-        });
 
-        card.addEventListener('mouseleave', () => {
+            tl
+            .add({
+                targets: 'header',
+                translateY: [-50, 0],
+                opacity: [0, 1]
+            })
+            .add({
+                targets: '.hero-content > *',
+                translateY: [50, 0],
+                opacity: [0, 1],
+                delay: anime.stagger(150)
+            }, '-=800');
+
+            // 2. Infinite Float for AI Icon
             anime({
-                targets: card,
-                scale: 1.0,
-                boxShadow: '0 0 15px rgba(0, 0, 0, 0.5)',
-                duration: 400,
-                easing: 'easeOutCubic'
+                targets: '.ai-icon',
+                translateY: [-10, 10],
+                direction: 'alternate',
+                loop: true,
+                duration: 2500,
+                easing: 'easeInOutSine'
             });
-        });
-    });
 
-    // 4. Smooth Button Pulse on Hover
-    const primaryBtn = document.querySelector('.btn-primary');
-    primaryBtn.addEventListener('mouseenter', () => {
-        anime({
-            targets: primaryBtn,
-            letterSpacing: ['0.08em', '0.15em'],
-            duration: 300,
-            easing: 'easeOutQuad'
+            // 3. Feature Cards Hover Effects
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    anime({
+                        targets: card,
+                        scale: 1.02,
+                        borderColor: '#009688',
+                        boxShadow: '0 0 30px rgba(0, 150, 136, 0.2)',
+                        duration: 300,
+                        easing: 'easeOutQuad'
+                    });
+                });
+                card.addEventListener('mouseleave', () => {
+                    anime({
+                        targets: card,
+                        scale: 1,
+                        borderColor: 'rgba(255,255,255,0.05)',
+                        boxShadow: 'none',
+                        duration: 300,
+                        easing: 'easeOutQuad'
+                    });
+                });
+            });
+
+            // 4. Scanner Line Animation (Looping)
+            anime({
+                targets: '.scan-line',
+                top: ['0%', '100%'],
+                easing: 'linear',
+                duration: 2000,
+                loop: true
+            });
+
+            // 5. Data Points Pulsing
+            anime({
+                targets: '.data-point',
+                r: [4, 6],
+                opacity: [0.5, 1],
+                delay: anime.stagger(200),
+                loop: true,
+                direction: 'alternate',
+                easing: 'easeInOutSine'
+            });
+
+            // 6. Scroll Reveal for Mapping Section
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        anime({
+                            targets: '.feed-item',
+                            translateX: [-20, 0],
+                            opacity: [0, 1],
+                            delay: anime.stagger(150),
+                            easing: 'easeOutQuad'
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(document.querySelector('.data-feed'));
         });
-    });
-    
-    primaryBtn.addEventListener('mouseleave', () => {
-        anime({
-            targets: primaryBtn,
-            letterSpacing: '0.08em',
-            duration: 300,
-            easing: 'easeOutQuad'
-        });
-    });
-</script>
+    </script>
 </body>
 </html>
