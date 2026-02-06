@@ -49,30 +49,22 @@
         .cursor-dot,
         .cursor-outline {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             transform: translate(-50%, -50%);
             border-radius: 50%;
             z-index: 9999;
             pointer-events: none;
         }
 
-        .cursor-dot {
-            width: 4px;
-            height: 4px;
-            background-color: var(--color-primary);
-        }
-
+        .cursor-dot { width: 4px; height: 4px; background-color: var(--color-primary); }
         .cursor-outline {
-            width: var(--cursor-size);
-            height: var(--cursor-size);
+            width: var(--cursor-size); height: var(--cursor-size);
             border: 1px solid var(--color-primary);
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
 
         body.hovering .cursor-outline {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             background-color: rgba(0, 150, 136, 0.1);
             border-color: #fff;
         }
@@ -94,15 +86,9 @@
             color: var(--color-primary);
         }
 
-        .boot-text {
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            opacity: 0;
-        }
-
+        .boot-text { font-size: 0.9rem; margin-bottom: 0.5rem; opacity: 0; }
         .loader-line {
-            width: 0%;
-            height: 2px;
+            width: 0%; height: 2px;
             background: var(--color-primary);
             margin-top: 20px;
             box-shadow: 0 0 10px var(--color-primary);
@@ -117,9 +103,9 @@
             font-size: 2.5rem;
             margin-bottom: 2rem;
             text-align: center;
-            background: linear-gradient(to right, #fff, var(--color-text-dim));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            /* Decryption effect makes this monospace temporarily, so we ensure height stability */
+            min-height: 3rem; 
+            color: #fff;
         }
 
         a { text-decoration: none; color: inherit; }
@@ -172,7 +158,6 @@
         }
 
         .header-inner { display: flex; justify-content: space-between; align-items: center; }
-
         .logo { font-weight: 800; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
 
         .status-badge {
@@ -207,22 +192,10 @@
         }
 
         .hero-content { position: relative; z-index: 2; max-width: 800px; opacity: 0; }
-
-        .hero h1 {
-            font-size: clamp(3rem, 5vw, 5rem);
-            margin-bottom: 1.5rem;
-            text-shadow: 0 0 20px rgba(0, 150, 136, 0.3);
-        }
-
+        .hero h1 { font-size: clamp(3rem, 5vw, 5rem); margin-bottom: 1.5rem; text-shadow: 0 0 20px rgba(0, 150, 136, 0.3); }
         .ai-icon { font-size: 4rem; margin-bottom: 1rem; display: inline-block; filter: drop-shadow(0 0 15px var(--color-primary)); }
-
-        /* Background Particles */
-        .particle {
-            position: absolute;
-            background: var(--color-primary);
-            border-radius: 50%;
-            opacity: 0.3;
-        }
+        
+        .particle { position: absolute; background: var(--color-primary); border-radius: 50%; opacity: 0.3; }
 
         /* --------------------------------------------------
            LIVE TERMINAL DEMO
@@ -243,7 +216,7 @@
             margin: 0 auto;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
             position: relative;
-            min-height: 250px; /* Ensure height for content */
+            min-height: 250px;
         }
 
         .terminal-header {
@@ -268,11 +241,10 @@
         .user-line { color: #fff; margin-bottom: 10px; }
         .system-line { color: var(--color-primary); margin-bottom: 10px; }
         .typing-cursor::after { content: '█'; animation: blink 1s infinite; }
-
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* --------------------------------------------------
-           FEATURES
+           FEATURES (GLOW & GLASS)
            -------------------------------------------------- */
         section { padding: 8rem 0; }
 
@@ -283,14 +255,31 @@
             margin-top: 4rem;
         }
 
+        /* UPDATED GLOW EFFECTS */
         .feature-card {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(20, 20, 20, 0.6);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
             padding: 2.5rem;
             border-radius: 12px;
             position: relative;
             overflow: hidden;
+            
+            /* The Base Glow (Subtle) */
+            border: 1px solid rgba(0, 150, 136, 0.3);
+            box-shadow: 
+                0 0 10px rgba(0, 150, 136, 0.05),
+                inset 0 0 20px rgba(0, 150, 136, 0.05);
+            
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            /* The Hover Glow (Intense) */
+            border-color: rgba(0, 150, 136, 0.8);
+            box-shadow: 
+                0 0 30px rgba(0, 150, 136, 0.3),
+                inset 0 0 20px rgba(0, 150, 136, 0.1);
         }
 
         .feature-card h3 {
@@ -298,6 +287,7 @@
             font-family: var(--font-code);
             margin-bottom: 1rem;
             font-size: 1.2rem;
+            text-shadow: 0 0 5px rgba(0, 150, 136, 0.4); /* Text glow */
         }
 
         /* --------------------------------------------------
@@ -339,7 +329,6 @@
         }
 
         .skin-layer-svg { width: 80%; height: 80%; filter: drop-shadow(0 0 5px rgba(0, 150, 136, 0.3)); }
-
         .data-feed { font-family: var(--font-code); }
 
         .feed-item {
@@ -356,12 +345,9 @@
         .feed-value { color: var(--color-text-dim); }
 
         /* --------------------------------------------------
-           TEXT SECTIONS (Privacy & TOS)
+           TEXT SECTIONS
            -------------------------------------------------- */
-        .text-section p {
-            max-width: 700px; margin: 0 auto 1.5rem auto;
-            font-size: 1.1rem; line-height: 1.8;
-        }
+        .text-section p { max-width: 700px; margin: 0 auto 1.5rem auto; font-size: 1.1rem; line-height: 1.8; }
         
         .disclaimer-box {
             border: 1px solid #cf6679;
@@ -386,26 +372,19 @@
         }
 
         .protocol-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            display: flex; align-items: flex-start; gap: 1rem;
+            margin-bottom: 1.5rem; padding-bottom: 1.5rem;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 1.5rem;
         }
-
         .protocol-item:last-child { border-bottom: none; margin-bottom: 0; }
         .protocol-icon { font-size: 1.5rem; color: var(--color-primary); }
         .protocol-title { color: #fff; font-weight: 700; font-family: var(--font-code); margin-bottom: 0.5rem; display: block; }
         .protocol-desc { font-size: 0.9rem; color: var(--color-text-dim); margin: 0; }
 
         footer {
-            padding: 3rem 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-family: var(--font-code);
-            font-size: 0.8rem;
-            color: var(--color-text-dim);
-            text-align: center;
+            padding: 3rem 0; border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: var(--font-code); font-size: 0.8rem;
+            color: var(--color-text-dim); text-align: center;
         }
 
         @media (max-width: 768px) {
@@ -449,7 +428,6 @@
 
     <section class="hero" id="home">
         <div id="particles"></div>
-        
         <div class="hero-content">
             <div class="ai-icon">⚕️</div>
             <h1>Next-Gen Skin Analysis</h1>
@@ -465,7 +443,7 @@
 
     <section id="terminal-demo">
         <div class="container">
-            <h2>Terminal View // Live Session</h2>
+            <h2 class="cipher-text" data-value="Terminal View // Live Session">Terminal View // Live Session</h2>
             
             <div class="terminal-window">
                 <div class="terminal-header">
@@ -474,26 +452,25 @@
                     <div class="dot green"></div>
                     <span style="font-size: 0.7rem; color: #555; margin-left: 10px;">bash -- dermato_cli</span>
                 </div>
-                <div class="terminal-body" id="terminal-output">
-                    </div>
+                <div class="terminal-body" id="terminal-output"></div>
             </div>
         </div>
     </section>
 
     <section id="features">
         <div class="container">
-            <h2>Core Modules</h2>
+            <h2 class="cipher-text" data-value="Core Modules">Core Modules</h2>
             <div class="features-grid">
                 <div class="feature-card hover-trigger">
-                    <h3>01 // Instant Analysis</h3>
+                    <h3 class="cipher-text" data-value="01 // Instant Analysis">01 // Instant Analysis</h3>
                     <p>Rapid visual processing algorithm designed to identify surface-level irregularities within seconds.</p>
                 </div>
                 <div class="feature-card hover-trigger">
-                    <h3>02 // Contextual Memory</h3>
+                    <h3 class="cipher-text" data-value="02 // Contextual Memory">02 // Contextual Memory</h3>
                     <p>Conversational AI retains session history for personalized, evolving medical guidance.</p>
                 </div>
                 <div class="feature-card hover-trigger">
-                    <h3>03 // Encrypted Privacy</h3>
+                    <h3 class="cipher-text" data-value="03 // Encrypted Privacy">03 // Encrypted Privacy</h3>
                     <p>Ephemeral data processing ensures no permanent storage of biometric imagery.</p>
                 </div>
             </div>
@@ -518,7 +495,7 @@
             </div>
 
             <div class="data-feed">
-                <h2>Diagnostic Feed</h2>
+                <h2 style="text-align: left;" class="cipher-text" data-value="Diagnostic Feed">Diagnostic Feed</h2>
                 <div class="feed-item">
                     <span class="feed-label">TEXTURE_GRADIENT</span>
                     <span class="feed-value">ANALYZING...</span>
@@ -541,7 +518,7 @@
 
     <section id="about" class="text-section">
         <div class="container" style="text-align: center;">
-            <h2>Project Architecture</h2>
+            <h2 class="cipher-text" data-value="Project Architecture">Project Architecture</h2>
             <p>Dermato is a student-led research initiative exploring the intersection of LLMs and healthcare. Built on the Gemini API.</p>
             <p style="color: var(--color-primary); font-family: var(--font-code); margin-top: 1rem;">> LEAD DEVELOPER: MANSI SRIVASTAVA</p>
         </div>
@@ -549,7 +526,7 @@
 
     <section id="privacy" class="text-section" style="background: #080808;">
         <div class="container">
-            <h2>Privacy Protocol</h2>
+            <h2 class="cipher-text" data-value="Privacy Protocol">Privacy Protocol</h2>
             <p style="text-align: center;">We operate on a strict Zero-Retention Policy. Your biometric data is processed ephemerally.</p>
             
             <div class="privacy-box hover-trigger">
@@ -580,7 +557,7 @@
 
     <section id="tos" class="text-section" style="background: #0f0f0f;">
         <div class="container" style="text-align: center;">
-            <h2>Terms of Use</h2>
+            <h2 class="cipher-text" data-value="Terms of Use">Terms of Use</h2>
             <div class="disclaimer-box hover-trigger">WARNING: NON-DIAGNOSTIC TOOL. Educational data only.</div>
             <p style="font-size: 0.9rem;">Analysis may contain hallucinations. Do not rely for critical decisions.</p>
         </div>
@@ -597,7 +574,6 @@
         // 1. CUSTOM CURSOR
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
-
         window.addEventListener('mousemove', (e) => {
             const posX = e.clientX;
             const posY = e.clientY;
@@ -605,7 +581,6 @@
             cursorDot.style.top = `${posY}px`;
             cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
         });
-
         const hoverTriggers = document.querySelectorAll('.hover-trigger, a, button, .privacy-box');
         hoverTriggers.forEach(trigger => {
             trigger.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
@@ -621,7 +596,7 @@
             .add({ targets: '#boot-screen', opacity: 0, duration: 800, complete: function() {
                 document.querySelector('#boot-screen').style.display = 'none';
                 startMainAnimations();
-                startTerminalLoop(); // New Iterative Loop
+                startTerminalLoop();
             }}, '+=200');
         };
 
@@ -630,7 +605,46 @@
             anime({ targets: '.hero-content', opacity: [0, 1], translateY: [50, 0], duration: 1000, delay: 200, easing: 'easeOutExpo' });
         }
 
-        // 3. ITERATIVE TERMINAL DEMO
+        // 3. DECRYPTION EFFECT (New Feature)
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+        const decryptElements = document.querySelectorAll('.cipher-text');
+
+        const decryptObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    runDecryption(entry.target);
+                    decryptObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        decryptElements.forEach(el => {
+            el.innerText = el.dataset.value.split("").map(() => letters[Math.floor(Math.random() * 26)]).join(""); // Scramble initially
+            decryptObserver.observe(el);
+        });
+
+        function runDecryption(target) {
+            let iterations = 0;
+            const originalText = target.dataset.value;
+            const interval = setInterval(() => {
+                target.innerText = originalText.split("")
+                    .map((letter, index) => {
+                        if(index < iterations) {
+                            return originalText[index];
+                        }
+                        return letters[Math.floor(Math.random() * 46)];
+                    })
+                    .join("");
+                
+                if(iterations >= originalText.length) { 
+                    clearInterval(interval);
+                }
+                
+                iterations += 1/2; // Controls speed (smaller = slower)
+            }, 30);
+        }
+
+        // 4. ITERATIVE TERMINAL DEMO
         const scenarios = [
             { user: "I have a red, itchy patch on my forearm.", result: "Possible Contact Dermatitis detected. Recommend keeping area dry and applying cool compress." },
             { user: "This mole on my shoulder changed shape.", result: "Asymmetry detected. High priority: Please consult a dermatologist for a biopsy immediately." },
@@ -654,28 +668,23 @@
             let i = 0;
             while(true) {
                 const scenario = scenarios[i % scenarios.length];
-                // Clear previous terminal content
                 document.getElementById('terminal-output').innerHTML = '';
-                
                 await new Promise(r => setTimeout(r, 500));
                 await typeWriter("> USER: " + scenario.user, "user-line");
                 await new Promise(r => setTimeout(r, 800));
                 await typeWriter("> SYSTEM: Analyzing image data...", "system-line");
                 await new Promise(r => setTimeout(r, 1200));
                 await typeWriter("> SYSTEM: [Result]: " + scenario.result, "system-line", 10);
-                
-                // Pause before next iteration
                 await new Promise(r => setTimeout(r, 4000));
                 i++;
             }
         }
 
-        // 4. ANIMATION LOOPS (High Velocity Particles)
+        // 5. ANIMATION LOOPS
         anime({ targets: '.scan-line', top: ['0%', '100%'], easing: 'linear', duration: 2500, loop: true, direction: 'alternate' });
 
-        // Generate HIGH DENSITY particles
         const particleContainer = document.getElementById('particles');
-        for (let i = 0; i < 80; i++) { // Increased to 80
+        for (let i = 0; i < 80; i++) { 
             const p = document.createElement('div');
             p.classList.add('particle');
             p.style.width = Math.random() * 4 + 'px';
@@ -685,20 +694,18 @@
             particleContainer.appendChild(p);
         }
 
-        // HIGH VELOCITY animation
         anime({
             targets: '.particle',
-            translateY: function() { return anime.random(-100, 100); }, // Increased range
+            translateY: function() { return anime.random(-100, 100); }, 
             translateX: function() { return anime.random(-100, 100); },
             opacity: [0.1, 0.5],
-            easing: 'linear', // Linear for constant speed feeling
-            duration: function() { return anime.random(1000, 2000); }, // Fast duration (1-2s)
+            easing: 'linear', 
+            duration: function() { return anime.random(1000, 2000); }, 
             delay: anime.stagger(50),
             loop: true,
             direction: 'alternate'
         });
 
-        // Intersection Observers
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
