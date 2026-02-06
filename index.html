@@ -11,25 +11,27 @@
 
     <style>
         /* --------------------------------------------------
-           THEME & VARIABLES (Dark Medical OS Theme)
+           THEME & VARIABLES
            -------------------------------------------------- */
         :root {
-            --color-bg: #0a0a0a;
-            --color-surface: #141414;
-            --color-primary: #009688;       /* Teal */
+            --color-bg: #050505;
+            --color-surface: #0f0f0f;
+            --color-primary: #009688;       
             --color-primary-dim: rgba(0, 150, 136, 0.1);
-            --color-secondary: #004d61;     /* Deep Teal */
+            --color-secondary: #004d61;     
             --color-text-main: #e0e0e0;
             --color-text-dim: #888888;
             --font-ui: 'Inter', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
+            --cursor-size: 20px;
         }
 
+        /* Hiding default cursor */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            cursor: default;
+            cursor: none !important; 
         }
 
         html { scroll-behavior: smooth; }
@@ -43,13 +45,76 @@
         }
 
         /* --------------------------------------------------
-           TYPOGRAPHY
+           CUSTOM CURSOR
            -------------------------------------------------- */
-        h1, h2, h3 {
-            font-weight: 800;
-            letter-spacing: -0.02em;
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
         }
 
+        .cursor-dot {
+            width: 4px;
+            height: 4px;
+            background-color: var(--color-primary);
+        }
+
+        .cursor-outline {
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border: 1px solid var(--color-primary);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        /* Hover State for Cursor */
+        body.hovering .cursor-outline {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 150, 136, 0.1);
+            border-color: #fff;
+        }
+
+        /* --------------------------------------------------
+           BOOT SCREEN
+           -------------------------------------------------- */
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-code);
+            color: var(--color-primary);
+        }
+
+        .boot-text {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0; /* Hidden initially */
+        }
+
+        .loader-line {
+            width: 0%;
+            height: 2px;
+            background: var(--color-primary);
+            margin-top: 20px;
+            box-shadow: 0 0 10px var(--color-primary);
+        }
+
+        /* --------------------------------------------------
+           TYPOGRAPHY
+           -------------------------------------------------- */
+        h1, h2, h3 { font-weight: 800; letter-spacing: -0.02em; }
+        
         h2 {
             font-size: 2.5rem;
             margin-bottom: 2rem;
@@ -59,15 +124,11 @@
             -webkit-text-fill-color: transparent;
         }
 
-        p { color: var(--color-text-dim); }
-
-        a { text-decoration: none; color: inherit; cursor: pointer; }
+        a { text-decoration: none; color: inherit; }
 
         /* --------------------------------------------------
            COMPONENTS
            -------------------------------------------------- */
-        
-        /* Custom "Tech" Buttons */
         .btn {
             display: inline-block;
             padding: 1rem 2.5rem;
@@ -78,7 +139,6 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            cursor: pointer;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
@@ -94,48 +154,28 @@
             z-index: -1;
         }
 
-        .btn:hover {
-            color: #000;
-            box-shadow: 0 0 20px var(--color-primary);
-        }
+        .btn:hover { color: #000; box-shadow: 0 0 20px var(--color-primary); }
+        .btn:hover::before { transform: translateX(100%); }
 
-        .btn:hover::before {
-            transform: translateX(100%);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
 
         /* --------------------------------------------------
            HEADER
            -------------------------------------------------- */
         header {
             position: fixed;
-            top: 0;
-            width: 100%;
+            top: 0; width: 100%;
             padding: 1.5rem 0;
-            background: rgba(10, 10, 10, 0.8);
+            background: rgba(5, 5, 5, 0.85);
             backdrop-filter: blur(10px);
             z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(-100%); /* Hidden initially */
         }
 
-        .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
 
-        .logo {
-            font-weight: 800;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .logo { font-weight: 800; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
 
         .status-badge {
             font-family: var(--font-code);
@@ -147,23 +187,12 @@
             border: 1px solid rgba(0, 150, 136, 0.3);
         }
 
-        nav ul {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        nav a {
-            font-size: 0.9rem;
-            color: var(--color-text-dim);
-            transition: color 0.3s;
-            font-family: var(--font-code);
-        }
-
+        nav ul { display: flex; gap: 2rem; list-style: none; }
+        nav a { font-size: 0.9rem; color: var(--color-text-dim); transition: color 0.3s; font-family: var(--font-code); }
         nav a:hover { color: var(--color-primary); }
 
         /* --------------------------------------------------
-           HERO SECTION (Scanner Effect)
+           HERO SECTION
            -------------------------------------------------- */
         .hero {
             height: 100vh;
@@ -173,18 +202,14 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            /* Animated Grid Background */
+            /* Grid Background */
             background-image: 
-                linear-gradient(rgba(0, 150, 136, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 150, 136, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
+                linear-gradient(rgba(0, 150, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 150, 136, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-        }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; opacity: 0; }
 
         .hero h1 {
             font-size: clamp(3rem, 5vw, 5rem);
@@ -192,15 +217,64 @@
             text-shadow: 0 0 20px rgba(0, 150, 136, 0.3);
         }
 
-        .ai-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-            filter: drop-shadow(0 0 15px var(--color-primary));
+        .ai-icon { font-size: 4rem; margin-bottom: 1rem; display: inline-block; filter: drop-shadow(0 0 15px var(--color-primary)); }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            background: var(--color-primary);
+            border-radius: 50%;
+            opacity: 0.3;
         }
 
         /* --------------------------------------------------
-           FEATURES (Glassmorphism Cards)
+           LIVE TERMINAL DEMO (New Feature)
+           -------------------------------------------------- */
+        #terminal-demo {
+            padding: 4rem 0;
+            background: #080808;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .terminal-window {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 2rem;
+            font-family: var(--font-code);
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .terminal-header {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            height: 25px;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            gap: 5px;
+        }
+
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+
+        .terminal-body { margin-top: 15px; min-height: 150px; color: #ccc; font-size: 0.9rem; }
+        .user-line { color: #fff; margin-bottom: 10px; }
+        .system-line { color: var(--color-primary); margin-bottom: 10px; }
+        .typing-cursor::after { content: '█'; animation: blink 1s infinite; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* --------------------------------------------------
+           FEATURES
            -------------------------------------------------- */
         section { padding: 8rem 0; }
 
@@ -229,7 +303,7 @@
         }
 
         /* --------------------------------------------------
-           DERMATOLOGICAL MAPPING (New Section)
+           DERMATOLOGICAL MAPPING
            -------------------------------------------------- */
         .mapping-section {
             background: radial-gradient(circle at center, #111 0%, #000 100%);
@@ -244,7 +318,6 @@
             gap: 4rem;
         }
 
-        /* The Scanner Visual */
         .scanner-visual {
             position: relative;
             width: 100%;
@@ -257,29 +330,19 @@
             border-radius: 8px;
         }
 
-        /* The moving line */
         .scan-line {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
             background: var(--color-primary);
             box-shadow: 0 0 15px var(--color-primary);
             z-index: 5;
             opacity: 0.8;
         }
 
-        .skin-layer-svg {
-            width: 80%;
-            height: 80%;
-            filter: drop-shadow(0 0 5px rgba(0, 150, 136, 0.3));
-        }
+        .skin-layer-svg { width: 80%; height: 80%; filter: drop-shadow(0 0 5px rgba(0, 150, 136, 0.3)); }
 
-        /* The Data Feed */
-        .data-feed {
-            font-family: var(--font-code);
-        }
+        .data-feed { font-family: var(--font-code); }
 
         .feed-item {
             background: rgba(255, 255, 255, 0.03);
@@ -288,20 +351,18 @@
             border-left: 2px solid var(--color-primary);
             display: flex;
             justify-content: space-between;
-            opacity: 0; /* Hidden initially for animation */
+            opacity: 0; 
         }
 
         .feed-label { color: var(--color-primary); font-weight: 700; }
         .feed-value { color: var(--color-text-dim); }
 
         /* --------------------------------------------------
-           STANDARD SECTIONS (About, TOS, Privacy)
+           FOOTER & TEXT
            -------------------------------------------------- */
         .text-section p {
-            max-width: 700px;
-            margin: 0 auto 1.5rem auto;
-            font-size: 1.1rem;
-            line-height: 1.8;
+            max-width: 700px; margin: 0 auto 1.5rem auto;
+            font-size: 1.1rem; line-height: 1.8;
         }
         
         .disclaimer-box {
@@ -316,9 +377,6 @@
             text-align: center;
         }
 
-        /* --------------------------------------------------
-           FOOTER
-           -------------------------------------------------- */
         footer {
             padding: 3rem 0;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -328,17 +386,26 @@
             text-align: center;
         }
 
-        /* --------------------------------------------------
-           MEDIA QUERIES
-           -------------------------------------------------- */
         @media (max-width: 768px) {
             .mapping-container { grid-template-columns: 1fr; }
             .header-inner { flex-direction: column; gap: 1rem; }
             nav ul { gap: 1rem; font-size: 0.8rem; }
+            * { cursor: auto !important; } /* Restore cursor on mobile */
+            .cursor-dot, .cursor-outline { display: none; }
         }
     </style>
 </head>
 <body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div id="boot-screen">
+        <div class="boot-text">> INITIALIZING KERNEL...</div>
+        <div class="boot-text">> LOADING NEURAL MODULES...</div>
+        <div class="boot-text">> ESTABLISHING SECURE LINK...</div>
+        <div class="loader-line"></div>
+    </div>
 
     <header>
         <div class="container header-inner">
@@ -349,16 +416,18 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#features">MODULES</a></li>
-                    <li><a href="#mapping">DIAGNOSTICS</a></li>
-                    <li><a href="#about">ABOUT</a></li>
-                    <li><a href="#tos">LEGAL</a></li>
+                    <li><a href="#terminal-demo" class="hover-trigger">LIVE_DEMO</a></li>
+                    <li><a href="#features" class="hover-trigger">MODULES</a></li>
+                    <li><a href="#mapping" class="hover-trigger">DIAGNOSTICS</a></li>
+                    <li><a href="#about" class="hover-trigger">ABOUT</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <section class="hero" id="home">
+        <div id="particles"></div>
+        
         <div class="hero-content">
             <div class="ai-icon">⚕️</div>
             <h1>Next-Gen Skin Analysis</h1>
@@ -366,9 +435,24 @@
                 Advanced AI-driven dermatological preliminary assessment tool. 
                 Powered by Gemini Vision architecture.
             </p>
-            <a href="https://i-am-atomica.github.io/Dermato/" target="_blank" class="btn">
+            <a href="https://i-am-atomica.github.io/Dermato/" target="_blank" class="btn hover-trigger">
                 Initialize Scan
             </a>
+        </div>
+    </section>
+
+    <section id="terminal-demo">
+        <div class="container">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <span style="font-size: 0.7rem; color: #555; margin-left: 10px;">bash -- dermato_cli</span>
+                </div>
+                <div class="terminal-body" id="terminal-output">
+                    </div>
+            </div>
         </div>
     </section>
 
@@ -376,17 +460,17 @@
         <div class="container">
             <h2>Core Modules</h2>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card hover-trigger">
                     <h3>01 // Instant Analysis</h3>
                     <p>Rapid visual processing algorithm designed to identify surface-level irregularities within seconds.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card hover-trigger">
                     <h3>02 // Contextual Memory</h3>
-                    <p>Conversational AI retains session history for personalized, evolving medical guidance tailored to your biology.</p>
+                    <p>Conversational AI retains session history for personalized, evolving medical guidance.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card hover-trigger">
                     <h3>03 // Encrypted Privacy</h3>
-                    <p>Ephemeral data processing ensures no permanent storage of biometric imagery. Zero-knowledge architecture.</p>
+                    <p>Ephemeral data processing ensures no permanent storage of biometric imagery.</p>
                 </div>
             </div>
         </div>
@@ -394,7 +478,6 @@
 
     <section id="mapping" class="mapping-section">
         <div class="container mapping-container">
-            
             <div class="scanner-visual">
                 <div class="scan-line"></div>
                 <svg class="skin-layer-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -429,142 +512,202 @@
                     <span class="feed-value">12ms [STABLE]</span>
                 </div>
             </div>
-
         </div>
     </section>
 
     <section id="about" class="text-section">
         <div class="container" style="text-align: center;">
             <h2>Project Architecture</h2>
-            <p>
-                Dermato is a student-led research initiative exploring the intersection of Large Language Models (LLMs) and healthcare accessibility. 
-                Built on the Gemini API, it serves as a proof-of-concept for automated preliminary triage.
-            </p>
-            <p style="color: var(--color-primary); font-family: var(--font-code); margin-top: 1rem;">
-                > LEAD DEVELOPER: MANSI SRIVASTAVA
-            </p>
+            <p>Dermato is a student-led research initiative exploring the intersection of LLMs and healthcare. Built on the Gemini API.</p>
+            <p style="color: var(--color-primary); font-family: var(--font-code); margin-top: 1rem;">> LEAD DEVELOPER: MANSI SRIVASTAVA</p>
         </div>
     </section>
 
     <section id="tos" class="text-section" style="background: #0f0f0f;">
         <div class="container" style="text-align: center;">
             <h2>Terms of Use</h2>
-            <div class="disclaimer-box">
-                WARNING: NON-DIAGNOSTIC TOOL.<br>
-                This system provides educational data only. It does not replace professional medical advice.
-            </div>
-            <p style="font-size: 0.9rem;">
-                By engaging the system, you acknowledge that all analysis is AI-generated and may contain hallucinations. 
-                Do not rely on this service for life-critical health decisions.
-            </p>
+            <div class="disclaimer-box">WARNING: NON-DIAGNOSTIC TOOL. Educational data only.</div>
+            <p style="font-size: 0.9rem;">Analysis may contain hallucinations. Do not rely for critical decisions.</p>
         </div>
     </section>
 
     <footer>
         <div class="container">
             <p>DERMATO SYSTEM LOG // 2026</p>
-            <p style="margin-top: 0.5rem; opacity: 0.5;">
-                <a href="#">Privacy Protocol</a> | <a href="#">Terms of Engagement</a> | <a href="mailto:dummy@email.com">Contact Ops</a>
-            </p>
+            <p style="margin-top: 0.5rem; opacity: 0.5;"><a href="#" class="hover-trigger">Privacy Protocol</a> | <a href="#" class="hover-trigger">Terms</a></p>
         </div>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // 1. Staggered Page Entrance
-            const tl = anime.timeline({
-                easing: 'easeOutExpo',
-                duration: 1200
+        // --------------------------------------------------
+        // 1. CUSTOM CURSOR LOGIC
+        // --------------------------------------------------
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Dot follows instantly
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline follows with slight delay (animation handled by CSS transition usually, or simple JS)
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Add hover effect for links and buttons
+        const hoverTriggers = document.querySelectorAll('.hover-trigger, a, button');
+        hoverTriggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => {
+                document.body.classList.add('hovering');
+            });
+            trigger.addEventListener('mouseleave', () => {
+                document.body.classList.remove('hovering');
+            });
+        });
+
+        // --------------------------------------------------
+        // 2. BOOT SEQUENCE & INITIALIZATION
+        // --------------------------------------------------
+        window.onload = () => {
+            const bootTexts = document.querySelectorAll('.boot-text');
+            const bootTimeline = anime.timeline({
+                easing: 'easeOutExpo'
             });
 
-            tl
+            // Animate Boot Text
+            bootTimeline
             .add({
-                targets: 'header',
-                translateY: [-50, 0],
-                opacity: [0, 1]
+                targets: '.boot-text',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                delay: anime.stagger(400)
             })
             .add({
-                targets: '.hero-content > *',
-                translateY: [50, 0],
+                targets: '.loader-line',
+                width: ['0%', '100%'],
+                duration: 800,
+                easing: 'easeInOutQuad'
+            })
+            .add({
+                targets: '#boot-screen',
+                opacity: 0,
+                duration: 800,
+                complete: function(anim) {
+                    document.querySelector('#boot-screen').style.display = 'none';
+                    startMainAnimations(); // Trigger main site entry
+                    startTerminal();       // Start the typing demo
+                }
+            }, '+=200');
+        };
+
+        function startMainAnimations() {
+            // Header Slide Down
+            anime({
+                targets: 'header',
+                translateY: ['-100%', '0%'],
+                duration: 800,
+                easing: 'easeOutExpo'
+            });
+
+            // Hero Fade In
+            anime({
+                targets: '.hero-content',
                 opacity: [0, 1],
-                delay: anime.stagger(150)
-            }, '-=800');
-
-            // 2. Infinite Float for AI Icon
-            anime({
-                targets: '.ai-icon',
-                translateY: [-10, 10],
-                direction: 'alternate',
-                loop: true,
-                duration: 2500,
-                easing: 'easeInOutSine'
+                translateY: [50, 0],
+                duration: 1000,
+                delay: 200,
+                easing: 'easeOutExpo'
             });
+        }
 
-            // 3. Feature Cards Hover Effects
-            const cards = document.querySelectorAll('.feature-card');
-            cards.forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    anime({
-                        targets: card,
-                        scale: 1.02,
-                        borderColor: '#009688',
-                        boxShadow: '0 0 30px rgba(0, 150, 136, 0.2)',
-                        duration: 300,
-                        easing: 'easeOutQuad'
-                    });
-                });
-                card.addEventListener('mouseleave', () => {
-                    anime({
-                        targets: card,
-                        scale: 1,
-                        borderColor: 'rgba(255,255,255,0.05)',
-                        boxShadow: 'none',
-                        duration: 300,
-                        easing: 'easeOutQuad'
-                    });
-                });
-            });
+        // --------------------------------------------------
+        // 3. LIVE TERMINAL SIMULATION
+        // --------------------------------------------------
+        async function typeWriter(text, elementClass, delay = 30) {
+            const output = document.getElementById('terminal-output');
+            const line = document.createElement('div');
+            line.className = elementClass;
+            output.appendChild(line);
+            
+            for (let i = 0; i < text.length; i++) {
+                line.textContent += text.charAt(i);
+                line.classList.add('typing-cursor');
+                await new Promise(r => setTimeout(r, delay));
+            }
+            line.classList.remove('typing-cursor');
+        }
 
-            // 4. UPDATED: Scanner Line Animation (Yo-Yo Effect)
-            anime({
-                targets: '.scan-line',
-                top: ['0%', '100%'],
-                easing: 'linear',
-                duration: 2000,
-                loop: true,
-                direction: 'alternate' // This makes it go Down -> Up -> Down
-            });
+        async function startTerminal() {
+            await new Promise(r => setTimeout(r, 1000));
+            await typeWriter("> USER: I have a red, itchy patch on my forearm.", "user-line");
+            await new Promise(r => setTimeout(r, 800));
+            await typeWriter("> SYSTEM: Analyzing image data...", "system-line");
+            await new Promise(r => setTimeout(r, 1500)); // Fake processing time
+            await typeWriter("> SYSTEM: [Result]: Possible Contact Dermatitis detected. Recommend keeping area dry and applying cool compress. Consult dermatologist if symptoms persist.", "system-line", 20);
+        }
 
-            // 5. Data Points Pulsing
-            anime({
-                targets: '.data-point',
-                r: [4, 6],
-                opacity: [0.5, 1],
-                delay: anime.stagger(200),
-                loop: true,
-                direction: 'alternate',
-                easing: 'easeInOutSine'
-            });
-
-            // 6. Scroll Reveal for Mapping Section
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        anime({
-                            targets: '.feed-item',
-                            translateX: [-20, 0],
-                            opacity: [0, 1],
-                            delay: anime.stagger(150),
-                            easing: 'easeOutQuad'
-                        });
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
-
-            observer.observe(document.querySelector('.data-feed'));
+        // --------------------------------------------------
+        // 4. ANIMATION LOOPS (Scanner, Particles, etc)
+        // --------------------------------------------------
+        
+        // Scanner Line Yo-Yo
+        anime({
+            targets: '.scan-line',
+            top: ['0%', '100%'],
+            easing: 'linear',
+            duration: 2500,
+            loop: true,
+            direction: 'alternate'
         });
+
+        // Floating Particles (Background)
+        const particleContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            p.style.width = Math.random() * 5 + 'px';
+            p.style.height = p.style.width;
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = Math.random() * 100 + 'vh';
+            particleContainer.appendChild(p);
+        }
+
+        anime({
+            targets: '.particle',
+            translateY: function() { return anime.random(-50, 50); },
+            translateX: function() { return anime.random(-50, 50); },
+            opacity: [0.1, 0.4],
+            easing: 'easeInOutSine',
+            duration: 3000,
+            delay: anime.stagger(200),
+            loop: true,
+            direction: 'alternate'
+        });
+
+        // Data Feed Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    anime({
+                        targets: '.feed-item',
+                        translateX: [-20, 0],
+                        opacity: [0, 1],
+                        delay: anime.stagger(150),
+                        easing: 'easeOutQuad'
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(document.querySelector('.data-feed'));
+
     </script>
 </body>
 </html>
