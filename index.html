@@ -48,7 +48,7 @@
         }
 
         /* --------------------------------------------------
-           CUSTOM CURSOR (UPDATED TO LERP PHYSICS)
+           CUSTOM CURSOR (JS LERP PHYSICS)
            -------------------------------------------------- */
         .cursor-dot, .cursor-outline {
             position: fixed; top: 0; left: 0;
@@ -66,7 +66,6 @@
             width: 40px; height: 40px; 
             margin-top: -20px; margin-left: -20px; 
             border: 1px solid var(--color-primary);
-            /* Removed positional transitions to allow zero-lag JS Lerp */
             transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
         }
         
@@ -182,20 +181,33 @@
         nav a:hover { color: var(--color-primary); }
 
         /* --------------------------------------------------
-           HERO SECTION
+           HERO SECTION & GRID RIPPLES
            -------------------------------------------------- */
         .hero {
             height: 100vh; display: flex; align-items: center; justify-content: center;
             text-align: center; position: relative; overflow: hidden;
+            /* The dim base grid layer */
             background-image: 
-                linear-gradient(rgba(0, 150, 136, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 150, 136, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0, 150, 136, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 150, 136, 0.05) 1px, transparent 1px);
             background-size: 50px 50px;
+            background-position: top left;
         }
+        
+        #grid-canvas {
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            z-index: 1; /* Sits above the CSS grid, behind the text */
+            pointer-events: none; /* Prevents blocking clicks */
+        }
+        
         .hero-content { position: relative; z-index: 2; max-width: 800px; opacity: 0; }
         .hero h1 { font-size: clamp(3rem, 6vw, 6rem); margin-bottom: 1rem; text-shadow: 0 0 20px rgba(0, 150, 136, 0.3); }
         .ai-icon { font-size: 4rem; margin-bottom: 1rem; display: inline-block; filter: drop-shadow(0 0 15px var(--color-primary)); }
-        .particle { position: absolute; background: var(--color-primary); border-radius: 50%; opacity: 0.3; }
+        
+        /* Basic particles remain for now (z-index 1 so they are behind content but visible) */
+        .particle { position: absolute; background: var(--color-primary); border-radius: 50%; opacity: 0.3; z-index: 1; pointer-events: none; }
 
         /* --------------------------------------------------
            LIVE TERMINAL DEMO
@@ -556,6 +568,7 @@
                 document.querySelector('#boot-screen').style.display = 'none';
                 startMainAnimations();
                 startTerminalLoop();
+                initGridRipples(); // Ignite the grid ripples right here
             }}, '+=200');
         };
 
@@ -564,7 +577,91 @@
             anime({ targets: '.hero-content', opacity: [0, 1], translateY: [50, 0], duration: 1000, delay: 200, easing: 'easeOutExpo' });
         }
 
-        // 3. DECRYPTION EFFECT (ANIME.JS POWERED)
+        // 3. GRID RIPPLE ENGINE
+        function initGridRipples() {
+            const heroSection = document.querySelector('.hero');
+            const canvas = document.createElement('canvas');
+            canvas.id = 'grid-canvas';
+            heroSection.prepend(canvas); 
+            
+            const ctx = canvas.getContext('2d');
+            let width, height, cx, cy, maxRadius;
+            const gridSize = 50; 
+            let ripples = [];
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                cx = width / 2;
+                cy = height / 2;
+                maxRadius = Math.hypot(cx, cy); 
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            function spawnRipple() {
+                ripples.push({
+                    radius: 0,
+                    thickness: 80,
+                    speed: 1.5 + Math.random() * 1 
+                });
+            }
+
+            spawnRipple();
+            setInterval(spawnRipple, 3500); 
+
+            function render() {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.clearRect(0, 0, width, height);
+
+                for (let i = ripples.length - 1; i >= 0; i--) {
+                    let r = ripples[i];
+                    r.radius += r.speed;
+
+                    let fadeOut = Math.max(0, 1 - (r.radius / maxRadius));
+                    if (fadeOut <= 0) {
+                        ripples.splice(i, 1);
+                        continue;
+                    }
+
+                    let innerRadius = Math.max(0, r.radius - r.thickness);
+                    let outerRadius = r.radius + r.thickness;
+
+                    let grad = ctx.createRadialGradient(cx, cy, innerRadius, cx, cy, outerRadius);
+                    grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+                    grad.addColorStop(0.5, `rgba(255, 255, 255, ${fadeOut})`);
+                    grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, outerRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.globalCompositeOperation = 'source-in';
+                ctx.beginPath();
+                
+                for (let x = 0; x <= width; x += gridSize) {
+                    ctx.moveTo(x, 0); ctx.lineTo(x, height);
+                }
+                for (let y = 0; y <= height; y += gridSize) {
+                    ctx.moveTo(0, y); ctx.lineTo(width, y);
+                }
+                
+                ctx.lineWidth = 2.5; 
+                ctx.strokeStyle = '#00FFFF'; 
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#00FFFF';
+                ctx.stroke();
+
+                requestAnimationFrame(render);
+            }
+            render();
+        }
+
+        // 4. DECRYPTION EFFECT (ANIME.JS POWERED)
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
         const decryptElements = document.querySelectorAll('.cipher-text');
 
@@ -590,7 +687,7 @@
                 targets: { val: 0 },
                 val: 100,
                 round: 1,
-                duration: 1200, // Tied perfectly to the rendering frame rate
+                duration: 1200, 
                 easing: 'linear',
                 update: function(anim) {
                     const iterations = (anim.progress / 100) * originalText.length;
@@ -606,7 +703,7 @@
             });
         }
 
-        // 4. ITERATIVE TERMINAL DEMO (RANDOMIZED CADENCE)
+        // 5. ITERATIVE TERMINAL DEMO (RANDOMIZED CADENCE)
         const scenarios = [
             { user: "I have a red, itchy patch on my forearm.", result: "Possible Contact Dermatitis detected. Recommend keeping area dry and applying cool compress." },
             { user: "This mole on my shoulder changed shape.", result: "Asymmetry detected. High priority: Please consult a dermatologist for a biopsy immediately." },
@@ -623,7 +720,6 @@
                 line.textContent += text.charAt(i);
                 line.classList.add('typing-cursor');
                 
-                // Inject random variance into the typing speed for realism
                 const randomDelay = baseDelay + (Math.random() * baseDelay * 1.5);
                 await new Promise(r => setTimeout(r, randomDelay));
             }
@@ -646,7 +742,7 @@
             }
         }
 
-        // 5. ANIMATION LOOPS & EXISTING PARTICLES
+        // 6. ANIMATION LOOPS & EXISTING PARTICLES
         anime({ targets: '.scan-line', top: ['0%', '100%'], easing: 'linear', duration: 2500, loop: true, direction: 'alternate' });
 
         const particleContainer = document.getElementById('particles');
