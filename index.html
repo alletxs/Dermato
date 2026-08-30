@@ -48,7 +48,7 @@
         }
 
         /* --------------------------------------------------
-           CUSTOM CURSOR (JS LERP PHYSICS)
+           CUSTOM CURSOR
            -------------------------------------------------- */
         .cursor-dot, .cursor-outline {
             position: fixed; top: 0; left: 0;
@@ -95,7 +95,7 @@
         }
 
         /* --------------------------------------------------
-           TYPOGRAPHY UPDATES
+           TYPOGRAPHY
            -------------------------------------------------- */
         h1 {
             font-family: var(--font-display);
@@ -193,21 +193,14 @@
             background-position: top left;
         }
         
-        #grid-canvas {
+        #grid-canvas, #particle-canvas {
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; height: 100%;
-            z-index: 1; 
             pointer-events: none; 
         }
-
-        #particle-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 2; 
-            pointer-events: none;
-        }
+        #grid-canvas { z-index: 1; }
+        #particle-canvas { z-index: 2; }
         
         .hero-content { position: relative; z-index: 3; max-width: 800px; opacity: 0; }
         .hero h1 { font-size: clamp(3rem, 6vw, 6rem); margin-bottom: 1rem; text-shadow: 0 0 20px rgba(0, 150, 136, 0.3); }
@@ -343,4 +336,523 @@
 
         @media (max-width: 768px) {
             .mapping-container { grid-template-columns: 1fr; }
-            .header-
+            .header-inner { flex-direction: column; gap: 1rem; }
+            nav ul { gap: 1rem; font-size: 0.8rem; }
+            * { cursor: auto !important; }
+            .cursor-dot, .cursor-outline { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div id="boot-screen">
+        <div class="boot-text">> INITIALIZING KERNEL...</div>
+        <div class="boot-text">> LOADING NEURAL MODULES...</div>
+        <div class="boot-text">> ESTABLISHING SECURE LINK...</div>
+        <div class="loader-line"></div>
+    </div>
+
+    <header>
+        <div class="container header-inner">
+            <div class="logo">
+                <span style="color: var(--color-primary);">DERMATO</span>
+                <span class="status-badge">SYSTEM: ONLINE</span>
+                <span class="status-badge" style="border-color: #555; color: #aaa;">USER: OPERATOR</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#terminal-demo" class="hover-trigger">LIVE_DEMO</a></li>
+                    <li><a href="#features" class="hover-trigger">MODULES</a></li>
+                    <li><a href="#mapping" class="hover-trigger">DIAGNOSTICS</a></li>
+                    <li><a href="#privacy" class="hover-trigger">PRIVACY</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <canvas id="grid-canvas"></canvas>
+        <canvas id="particle-canvas"></canvas>
+        
+        <div class="hero-content">
+            <div class="ai-icon">⚕️</div>
+            <h1>Next-Gen Skin Analysis</h1>
+            <p style="font-size: 1.25rem; margin-bottom: 2.5rem;">
+                Advanced AI-driven dermatological preliminary assessment tool. 
+                Powered by Gemini Vision architecture.
+            </p>
+            <a href="https://i-am-atomica.github.io/Dermato/" target="_blank" class="btn hover-trigger">
+                Initialize Scan
+            </a>
+        </div>
+    </section>
+
+    <section id="terminal-demo">
+        <div class="container">
+            <h2 class="cipher-text" data-value="Terminal View // Live Session">Terminal View // Live Session</h2>
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <span style="font-size: 0.7rem; color: #555; margin-left: 10px;">bash -- dermato_cli</span>
+                </div>
+                <div class="terminal-body" id="terminal-output"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="container">
+            <h2 class="cipher-text" data-value="Core Modules">Core Modules</h2>
+            <div class="features-grid">
+                <div class="feature-card hover-trigger">
+                    <h3 class="cipher-text" data-value="01 // Instant Analysis">01 // Instant Analysis</h3>
+                    <p>Rapid visual processing algorithm designed to identify surface-level irregularities within seconds.</p>
+                </div>
+                <div class="feature-card hover-trigger">
+                    <h3 class="cipher-text" data-value="02 // Contextual Memory">02 // Contextual Memory</h3>
+                    <p>Conversational AI retains session history for personalized, evolving medical guidance.</p>
+                </div>
+                <div class="feature-card hover-trigger">
+                    <h3 class="cipher-text" data-value="03 // Encrypted Privacy">03 // Encrypted Privacy</h3>
+                    <p>Ephemeral data processing ensures no permanent storage of biometric imagery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="mapping" class="mapping-section">
+        <div class="container mapping-container">
+            <div class="scanner-visual">
+                <div class="scan-line"></div>
+                <img src="Skin.jpeg" alt="Skin Anatomy Diagram" class="scanner-image">
+                <div class="scanner-label">SCANNING ARRAY ACTIVE...</div>
+            </div>
+
+            <div class="data-feed">
+                <h2 style="text-align: left;" class="cipher-text" data-value="Diagnostic Feed">Diagnostic Feed</h2>
+                <div class="feed-item">
+                    <span class="feed-label">TEXTURE_GRADIENT</span>
+                    <span class="feed-value">ANALYZING...</span>
+                </div>
+                <div class="feed-item">
+                    <span class="feed-label">PIGMENT_DENSITY</span>
+                    <span class="feed-value">CALCULATING...</span>
+                </div>
+                <div class="feed-item">
+                    <span class="feed-label">ANOMALY_INDEX</span>
+                    <span class="feed-value">WAITING FOR INPUT</span>
+                </div>
+                <div class="feed-item">
+                    <span class="feed-label">API_LATENCY</span>
+                    <span class="feed-value">12ms [STABLE]</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="text-section">
+        <div class="container" style="text-align: center;">
+            <h2 class="cipher-text" data-value="Project Architecture">Project Architecture</h2>
+            <p>Dermato is a student-led research initiative exploring the intersection of LLMs and healthcare. Built on the Gemini API.</p>
+            
+            <div style="margin-top: 1.5rem;">
+                <p style="color: var(--color-primary); font-family: var(--font-code); margin-bottom: 0.5rem;">
+                    > LEAD DEVELOPER: MANSI SRIVASTAVA
+                </p>
+                <p style="font-family: var(--font-code);">
+                    <a href="https://github.com/I-am-Atomica/Dermato/blob/main/Dermato%20ai%20logbook.pdf" target="_blank" class="hover-trigger" style="color: var(--color-text-dim); border-bottom: 1px dashed var(--color-primary); padding-bottom: 2px;">
+                        > VIEW_SYSTEM_LOGBOOK.PDF
+                    </a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="privacy" class="text-section" style="background: #080808;">
+        <div class="container">
+            <h2 class="cipher-text" data-value="Privacy Protocol">Privacy Protocol</h2>
+            <p style="text-align: center;">We operate on a strict Zero-Retention Policy. Your biometric data is processed ephemerally.</p>
+            
+            <div class="privacy-box hover-trigger">
+                <div class="protocol-item">
+                    <div class="protocol-icon">🔒</div>
+                    <div>
+                        <span class="protocol-title">END-TO-END ENCRYPTION</span>
+                        <p class="protocol-desc">All data transmission between client and Gemini API nodes is encrypted via TLS 1.3 protocols.</p>
+                    </div>
+                </div>
+                <div class="protocol-item">
+                    <div class="protocol-icon">🗑️</div>
+                    <div>
+                        <span class="protocol-title">EPHEMERAL PROCESSING</span>
+                        <p class="protocol-desc">Images are processed in RAM only. No images are written to disk or stored in persistent databases.</p>
+                    </div>
+                </div>
+                <div class="protocol-item">
+                    <div class="protocol-icon">👤</div>
+                    <div>
+                        <span class="protocol-title">ANONYMIZED QUERYING</span>
+                        <p class="protocol-desc">Personal identifiers are stripped before API transmission. We do not track IP addresses.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tos" class="text-section" style="background: #0f0f0f;">
+        <div class="container" style="text-align: center;">
+            <h2 class="cipher-text" data-value="Terms of Use">Terms of Use</h2>
+            <div class="disclaimer-box hover-trigger">WARNING: NON-DIAGNOSTIC TOOL. Educational data only.</div>
+            <p style="font-size: 0.9rem;">Analysis may contain hallucinations. Do not rely for critical decisions.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>DERMATO SYSTEM LOG // 2026</p>
+            <p style="margin-top: 0.5rem; opacity: 0.5;"><a href="#privacy" class="hover-trigger">Privacy Protocol</a> | <a href="#tos" class="hover-trigger">Terms</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. GLOBAL STATE & CURSOR LERP
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let outlineX = mouseX;
+        let outlineY = mouseY;
+
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+        });
+
+        function renderCursor() {
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+            cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0)`;
+            requestAnimationFrame(renderCursor);
+        }
+        requestAnimationFrame(renderCursor);
+
+        const hoverTriggers = document.querySelectorAll('.hover-trigger, a, button, .privacy-box, .feature-card');
+        hoverTriggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            trigger.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        // 2. SAFE BOOT SEQUENCE
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof anime === 'undefined') {
+                console.error("Anime.js failed to load. Initiating fallback display.");
+                document.getElementById('boot-screen').style.display = 'none';
+                document.querySelector('header').style.transform = 'translateY(0)';
+                document.querySelector('.hero-content').style.opacity = '1';
+                return;
+            }
+
+            const bootTimeline = anime.timeline({ easing: 'easeOutExpo' });
+            bootTimeline
+            .add({ targets: '.boot-text', opacity: [0, 1], translateY: [20, 0], delay: anime.stagger(400) })
+            .add({ targets: '.loader-line', width: ['0%', '100%'], duration: 800, easing: 'easeInOutQuad' })
+            .add({ 
+                targets: '#boot-screen', 
+                opacity: 0, 
+                duration: 800, 
+                complete: function() {
+                    document.getElementById('boot-screen').style.display = 'none';
+                    initializeApp();
+                }
+            }, '+=200');
+        });
+
+        // 3. STAGED INITIALIZATION
+        function initializeApp() {
+            anime({ targets: 'header', translateY: ['-100%', '0%'], duration: 800, easing: 'easeOutExpo' });
+            anime({ targets: '.hero-content', opacity: [0, 1], translateY: [50, 0], duration: 1000, delay: 200, easing: 'easeOutExpo' });
+            anime({ targets: '.scan-line', top: ['0%', '100%'], easing: 'linear', duration: 2500, loop: true, direction: 'alternate' });
+
+            startTerminalLoop();
+            initGridRipples(); 
+            initBioTechParticles();
+            initScrollReveals();
+        }
+
+        // 4. GRID RIPPLE ENGINE (OPTIMIZED)
+        function initGridRipples() {
+            const canvas = document.getElementById('grid-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height, cx, cy, maxRadius;
+            const gridSize = 50; 
+            let ripples = [];
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                cx = width / 2;
+                cy = height / 2;
+                maxRadius = Math.hypot(cx, cy); 
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            function spawnRipple() {
+                ripples.push({ radius: 0, thickness: 80, speed: 1.5 + Math.random() * 1 });
+            }
+
+            spawnRipple();
+            setInterval(spawnRipple, 3500); 
+
+            function render() {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.clearRect(0, 0, width, height);
+
+                for (let i = ripples.length - 1; i >= 0; i--) {
+                    let r = ripples[i];
+                    r.radius += r.speed;
+
+                    let fadeOut = Math.max(0, 1 - (r.radius / maxRadius));
+                    if (fadeOut <= 0) {
+                        ripples.splice(i, 1);
+                        continue;
+                    }
+
+                    let innerRadius = Math.max(0, r.radius - r.thickness);
+                    let outerRadius = r.radius + r.thickness;
+
+                    let grad = ctx.createRadialGradient(cx, cy, innerRadius, cx, cy, outerRadius);
+                    let peakAlpha = Math.min(1, fadeOut * 1.5);
+                    grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+                    grad.addColorStop(0.3, `rgba(255, 255, 255, ${peakAlpha})`);
+                    grad.addColorStop(0.7, `rgba(255, 255, 255, ${peakAlpha})`); 
+                    grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, outerRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.globalCompositeOperation = 'source-in';
+                ctx.beginPath();
+                
+                for (let x = 0; x <= width; x += gridSize) {
+                    ctx.moveTo(x, 0); ctx.lineTo(x, height);
+                }
+                for (let y = 0; y <= height; y += gridSize) {
+                    ctx.moveTo(0, y); ctx.lineTo(width, y);
+                }
+                
+                // Faked glow technique (Double Stroking)
+                ctx.lineWidth = 8; 
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.25)';
+                ctx.stroke();
+
+                ctx.lineWidth = 2; 
+                ctx.strokeStyle = '#00FFFF';
+                ctx.stroke();
+
+                requestAnimationFrame(render);
+            }
+            render();
+        }
+
+        // 5. BIO-TECH PARTICLE ENGINE (CRASH-PROOFED & OPTIMIZED)
+        function initBioTechParticles() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            let spores = [];
+            let packets = [];
+
+            function resize() {
+                w = window.innerWidth;
+                h = window.innerHeight;
+                canvas.width = w;
+                canvas.height = h;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            for(let i = 0; i < 50; i++) {
+                spores.push({
+                    x: Math.random() * w, y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+                    baseVx: (Math.random() - 0.5) * 0.2, baseVy: (Math.random() - 0.5) * 0.2,
+                    r: Math.random() * 3 + 1.5,
+                    alpha: Math.random() * 0.4 + 0.1
+                });
+            }
+
+            function loop() {
+                ctx.clearRect(0, 0, w, h);
+
+                if(Math.random() < 0.04 && packets.length < 8) {
+                    let isHoriz = Math.random() > 0.5;
+                    let gridCoord = Math.floor((Math.random() * (isHoriz ? h : w)) / 50) * 50;
+                    packets.push({
+                        x: isHoriz ? (Math.random() > 0.5 ? 0 : w) : gridCoord,
+                        y: isHoriz ? gridCoord : (Math.random() > 0.5 ? 0 : h),
+                        vx: isHoriz ? (Math.random() > 0.5 ? 8 : -8) : 0,
+                        vy: isHoriz ? 0 : (Math.random() > 0.5 ? 8 : -8)
+                    });
+                }
+
+                for(let i = packets.length - 1; i >= 0; i--) {
+                    let p = packets[i];
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    p.x += p.vx; p.y += p.vy;
+                    ctx.lineTo(p.x - (p.vx * 6), p.y - (p.vy * 6));
+                    
+                    ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)'; ctx.stroke();
+                    ctx.lineWidth = 2; ctx.strokeStyle = '#00FFFF'; ctx.stroke();
+
+                    if(p.x < 0 || p.x > w || p.y < 0 || p.y > h) packets.splice(i, 1);
+                }
+
+                for(let i = 0; i < spores.length; i++) {
+                    let p = spores[i];
+
+                    let dx = p.x - mouseX;
+                    let dy = p.y - mouseY;
+                    let dist = Math.hypot(dx, dy);
+                    
+                    // CRITICAL FIX: dist > 0.1 prevents Division by Zero (NaN) crash
+                    if(dist < 120 && dist > 0.1) {
+                        let force = (120 - dist) / 120;
+                        p.vx += (dx / dist) * force * 0.2;
+                        p.vy += (dy / dist) * force * 0.2;
+                    }
+
+                    p.vx *= 0.96; p.vy *= 0.96;
+                    p.x += p.vx + p.baseVx; p.y += p.vy + p.baseVy;
+
+                    if(p.x < 0) p.x = w; if(p.x > w) p.x = 0;
+                    if(p.y < 0) p.y = h; if(p.y > h) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(0, 150, 136, ${p.alpha})`;
+                    ctx.fill();
+
+                    for(let j = i + 1; j < spores.length; j++) {
+                        let p2 = spores[j];
+                        let d2 = Math.hypot(p.x - p2.x, p.y - p2.y);
+                        if(d2 < 45) { 
+                            let midX = (p.x + p2.x) / 2;
+                            let midY = (p.y + p2.y) / 2;
+                            let intensity = (45 - d2) / 45;
+                            
+                            ctx.beginPath();
+                            ctx.arc(midX, midY, 1.5 + Math.max(0, intensity) * 2, 0, Math.PI * 2);
+                            ctx.fillStyle = `rgba(0, 255, 255, ${Math.max(0, Math.min(1, intensity)) * 0.8})`;
+                            ctx.fill();
+                        }
+                    }
+                }
+                requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        // 6. SCROLL REVEALS & DECRYPTION
+        function initScrollReveals() {
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+            const decryptElements = document.querySelectorAll('.cipher-text');
+
+            const decryptObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        runDecryption(entry.target, letters);
+                        decryptObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            decryptElements.forEach(el => {
+                el.dataset.original = el.dataset.value; 
+                el.innerText = el.dataset.value.split("").map(() => letters[Math.floor(Math.random() * 26)]).join(""); 
+                decryptObserver.observe(el);
+            });
+
+            const fadeObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const items = entry.target.querySelectorAll('.feed-item, .protocol-item');
+                        if (items.length) {
+                            anime({ targets: items, translateX: [-20, 0], opacity: [0, 1], delay: anime.stagger(150), easing: 'easeOutQuad' });
+                            fadeObserver.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            const dataFeed = document.querySelector('.data-feed');
+            const privacyBox = document.querySelector('.privacy-box');
+            if(dataFeed) fadeObserver.observe(dataFeed);
+            if(privacyBox) fadeObserver.observe(privacyBox);
+        }
+
+        function runDecryption(target, letters) {
+            const originalText = target.dataset.original;
+            anime({
+                targets: { val: 0 }, val: 100, round: 1, duration: 1200, easing: 'linear',
+                update: function(anim) {
+                    const iterations = (anim.progress / 100) * originalText.length;
+                    target.innerText = originalText.split("")
+                        .map((letter, index) => index < iterations ? originalText[index] : letters[Math.floor(Math.random() * letters.length)])
+                        .join("");
+                }
+            });
+        }
+
+        // 7. ITERATIVE TERMINAL
+        const scenarios = [
+            { user: "I have a red, itchy patch on my forearm.", result: "Possible Contact Dermatitis detected. Recommend keeping area dry and applying cool compress." },
+            { user: "This mole on my shoulder changed shape.", result: "Asymmetry detected. High priority: Please consult a dermatologist for a biopsy immediately." },
+            { user: "Dry scaling skin on elbows and knees.", result: "Visual markers align with Psoriasis. Recommend moisturizing and avoiding triggers." }
+        ];
+
+        async function typeWriter(text, elementClass, baseDelay = 20) {
+            const output = document.getElementById('terminal-output');
+            const line = document.createElement('div');
+            line.className = elementClass;
+            output.appendChild(line);
+            
+            for (let i = 0; i < text.length; i++) {
+                line.textContent += text.charAt(i);
+                line.classList.add('typing-cursor');
+                await new Promise(r => setTimeout(r, baseDelay + (Math.random() * baseDelay * 1.5)));
+            }
+            line.classList.remove('typing-cursor');
+        }
+
+        async function startTerminalLoop() {
+            let i = 0;
+            while(true) {
+                const scenario = scenarios[i % scenarios.length];
+                document.getElementById('terminal-output').innerHTML = '';
+                await new Promise(r => setTimeout(r, 500));
+                await typeWriter("> USER: " + scenario.user, "user-line", 30);
+                await new Promise(r => setTimeout(r, 800));
+                await typeWriter("> SYSTEM: Analyzing image data...", "system-line", 20);
+                await new Promise(r => setTimeout(r, 1200));
+                await typeWriter("> SYSTEM: [Result]: " + scenario.result, "system-line", 15);
+                await new Promise(r => setTimeout(r, 4000));
+                i++;
+            }
+        }
+    </script>
+</body>
+</html>
