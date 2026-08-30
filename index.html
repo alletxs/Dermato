@@ -26,8 +26,6 @@
             --font-display: 'Orbitron', sans-serif;
             --font-ui: 'Rajdhani', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
-            
-            --cursor-size: 20px;
         }
 
         * {
@@ -50,22 +48,33 @@
         }
 
         /* --------------------------------------------------
-           CUSTOM CURSOR
+           CUSTOM CURSOR (UPDATED TO LERP PHYSICS)
            -------------------------------------------------- */
         .cursor-dot, .cursor-outline {
             position: fixed; top: 0; left: 0;
-            transform: translate(-50%, -50%);
-            border-radius: 50%; z-index: 9999; pointer-events: none;
+            border-radius: 50%; z-index: 10000; pointer-events: none;
         }
-        .cursor-dot { width: 4px; height: 4px; background-color: var(--color-primary); }
+        
+        .cursor-dot { 
+            width: 6px; height: 6px; 
+            margin-top: -3px; margin-left: -3px; 
+            background-color: var(--color-primary); 
+            transition: background-color 0.2s ease;
+        }
+        
         .cursor-outline {
-            width: var(--cursor-size); height: var(--cursor-size);
+            width: 40px; height: 40px; 
+            margin-top: -20px; margin-left: -20px; 
             border: 1px solid var(--color-primary);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            /* Removed positional transitions to allow zero-lag JS Lerp */
+            transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
         }
+        
         body.hovering .cursor-outline {
-            width: 40px; height: 40px;
-            background-color: rgba(0, 150, 136, 0.1); border-color: #fff;
+            width: 60px; height: 60px; 
+            margin-top: -30px; margin-left: -30px; 
+            background-color: rgba(0, 150, 136, 0.1); 
+            border-color: #fff;
         }
 
         /* --------------------------------------------------
@@ -74,7 +83,7 @@
         #boot-screen {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: #000; z-index: 10000;
+            background: #000; z-index: 9000;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             font-family: var(--font-code); color: var(--color-primary);
@@ -241,7 +250,7 @@
         .feature-card p { font-size: 1.1rem; }
 
         /* --------------------------------------------------
-           DERMATOLOGICAL MAPPING (UPDATED)
+           DERMATOLOGICAL MAPPING
            -------------------------------------------------- */
         .mapping-section {
             background: radial-gradient(circle at center, #111 0%, #000 100%);
@@ -253,16 +262,16 @@
         .scanner-visual {
             position: relative; width: 100%; height: 400px;
             display: flex; justify-content: center; align-items: center;
-            background: #000; /* Solid black to support the image */
+            background: #000;
             border: 1px solid rgba(0, 150, 136, 0.2); border-radius: 8px;
-            overflow: hidden; /* Ensures image and scan line stay inside */
+            overflow: hidden; 
         }
         
         .scanner-image {
             width: 100%; height: 100%;
             object-fit: cover;
-            opacity: 0.7; /* Dim it slightly for the "Dark OS" feel */
-            filter: brightness(0.8) contrast(1.1); /* Enhance contrast for tech look */
+            opacity: 0.7; 
+            filter: brightness(0.8) contrast(1.1); 
             position: relative;
             z-index: 1;
         }
@@ -327,6 +336,7 @@
 </head>
 <body>
 
+    <!-- CUSTOM CURSOR -->
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
@@ -451,7 +461,7 @@
                        target="_blank" 
                        class="hover-trigger" 
                        style="color: var(--color-text-dim); border-bottom: 1px dashed var(--color-primary); padding-bottom: 2px;">
-                       > VIEW_SYSTEM_LOGBOOK.PDF
+                        > VIEW_SYSTEM_LOGBOOK.PDF
                     </a>
                 </p>
             </div>
@@ -505,17 +515,32 @@
     </footer>
 
     <script>
-        // 1. CUSTOM CURSOR
+        // 1. CUSTOM CURSOR (JS LERP ENGINE)
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
+        
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let outlineX = mouseX;
+        let outlineY = mouseY;
+
         window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
-            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            // Dot moves exactly with the hardware mouse instantly via 3D transform
+            cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
         });
-        const hoverTriggers = document.querySelectorAll('.hover-trigger, a, button, .privacy-box');
+
+        // Animation loop for the elastic trailing effect
+        function renderCursor() {
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+            cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0)`;
+            requestAnimationFrame(renderCursor);
+        }
+        requestAnimationFrame(renderCursor);
+
+        const hoverTriggers = document.querySelectorAll('.hover-trigger, a, button, .privacy-box, .feature-card');
         hoverTriggers.forEach(trigger => {
             trigger.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
             trigger.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
@@ -539,7 +564,7 @@
             anime({ targets: '.hero-content', opacity: [0, 1], translateY: [50, 0], duration: 1000, delay: 200, easing: 'easeOutExpo' });
         }
 
-        // 3. DECRYPTION EFFECT
+        // 3. DECRYPTION EFFECT (ANIME.JS POWERED)
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
         const decryptElements = document.querySelectorAll('.cipher-text');
 
@@ -553,47 +578,54 @@
         }, { threshold: 0.5 });
 
         decryptElements.forEach(el => {
+            el.dataset.original = el.dataset.value; 
             el.innerText = el.dataset.value.split("").map(() => letters[Math.floor(Math.random() * 26)]).join(""); 
             decryptObserver.observe(el);
         });
 
         function runDecryption(target) {
-            let iterations = 0;
-            const originalText = target.dataset.value;
-            const interval = setInterval(() => {
-                target.innerText = originalText.split("")
-                    .map((letter, index) => {
-                        if(index < iterations) {
-                            return originalText[index];
-                        }
-                        return letters[Math.floor(Math.random() * 46)];
-                    })
-                    .join("");
-                
-                if(iterations >= originalText.length) { 
-                    clearInterval(interval);
+            const originalText = target.dataset.original;
+            
+            anime({
+                targets: { val: 0 },
+                val: 100,
+                round: 1,
+                duration: 1200, // Tied perfectly to the rendering frame rate
+                easing: 'linear',
+                update: function(anim) {
+                    const iterations = (anim.progress / 100) * originalText.length;
+                    target.innerText = originalText.split("")
+                        .map((letter, index) => {
+                            if(index < iterations) {
+                                return originalText[index];
+                            }
+                            return letters[Math.floor(Math.random() * letters.length)];
+                        })
+                        .join("");
                 }
-                
-                iterations += 1/2; 
-            }, 30);
+            });
         }
 
-        // 4. ITERATIVE TERMINAL DEMO
+        // 4. ITERATIVE TERMINAL DEMO (RANDOMIZED CADENCE)
         const scenarios = [
             { user: "I have a red, itchy patch on my forearm.", result: "Possible Contact Dermatitis detected. Recommend keeping area dry and applying cool compress." },
             { user: "This mole on my shoulder changed shape.", result: "Asymmetry detected. High priority: Please consult a dermatologist for a biopsy immediately." },
             { user: "Dry scaling skin on elbows and knees.", result: "Visual markers align with Psoriasis. Recommend moisturizing and avoiding triggers." }
         ];
 
-        async function typeWriter(text, elementClass, delay = 20) {
+        async function typeWriter(text, elementClass, baseDelay = 20) {
             const output = document.getElementById('terminal-output');
             const line = document.createElement('div');
             line.className = elementClass;
             output.appendChild(line);
+            
             for (let i = 0; i < text.length; i++) {
                 line.textContent += text.charAt(i);
                 line.classList.add('typing-cursor');
-                await new Promise(r => setTimeout(r, delay));
+                
+                // Inject random variance into the typing speed for realism
+                const randomDelay = baseDelay + (Math.random() * baseDelay * 1.5);
+                await new Promise(r => setTimeout(r, randomDelay));
             }
             line.classList.remove('typing-cursor');
         }
@@ -604,17 +636,17 @@
                 const scenario = scenarios[i % scenarios.length];
                 document.getElementById('terminal-output').innerHTML = '';
                 await new Promise(r => setTimeout(r, 500));
-                await typeWriter("> USER: " + scenario.user, "user-line");
+                await typeWriter("> USER: " + scenario.user, "user-line", 30);
                 await new Promise(r => setTimeout(r, 800));
-                await typeWriter("> SYSTEM: Analyzing image data...", "system-line");
+                await typeWriter("> SYSTEM: Analyzing image data...", "system-line", 20);
                 await new Promise(r => setTimeout(r, 1200));
-                await typeWriter("> SYSTEM: [Result]: " + scenario.result, "system-line", 10);
+                await typeWriter("> SYSTEM: [Result]: " + scenario.result, "system-line", 15);
                 await new Promise(r => setTimeout(r, 4000));
                 i++;
             }
         }
 
-        // 5. ANIMATION LOOPS
+        // 5. ANIMATION LOOPS & EXISTING PARTICLES
         anime({ targets: '.scan-line', top: ['0%', '100%'], easing: 'linear', duration: 2500, loop: true, direction: 'alternate' });
 
         const particleContainer = document.getElementById('particles');
