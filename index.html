@@ -63,15 +63,15 @@
         }
         
         .cursor-outline {
-            width: 40px; height: 40px; 
-            margin-top: -20px; margin-left: -20px; 
+            width: 30px; height: 30px; 
+            margin-top: -15px; margin-left: -15px; 
             border: 1px solid var(--color-primary);
             transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
         }
         
         body.hovering .cursor-outline {
-            width: 60px; height: 60px; 
-            margin-top: -30px; margin-left: -30px; 
+            width: 45px; height: 45px; 
+            margin-top: -22.5px; margin-left: -22.5px; 
             background-color: rgba(0, 150, 136, 0.1); 
             border-color: #fff;
         }
@@ -181,12 +181,11 @@
         nav a:hover { color: var(--color-primary); }
 
         /* --------------------------------------------------
-           HERO SECTION & GRID RIPPLES
+           HERO SECTION & VFX CANVASES
            -------------------------------------------------- */
         .hero {
             height: 100vh; display: flex; align-items: center; justify-content: center;
             text-align: center; position: relative; overflow: hidden;
-            /* The dim base grid layer */
             background-image: 
                 linear-gradient(rgba(0, 150, 136, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 150, 136, 0.05) 1px, transparent 1px);
@@ -198,16 +197,21 @@
             position: absolute; 
             top: 0; left: 0; 
             width: 100%; height: 100%;
-            z-index: 1; /* Sits above the CSS grid, behind the text */
-            pointer-events: none; /* Prevents blocking clicks */
+            z-index: 1; 
+            pointer-events: none; 
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 2; 
+            pointer-events: none;
         }
         
-        .hero-content { position: relative; z-index: 2; max-width: 800px; opacity: 0; }
+        .hero-content { position: relative; z-index: 3; max-width: 800px; opacity: 0; }
         .hero h1 { font-size: clamp(3rem, 6vw, 6rem); margin-bottom: 1rem; text-shadow: 0 0 20px rgba(0, 150, 136, 0.3); }
         .ai-icon { font-size: 4rem; margin-bottom: 1rem; display: inline-block; filter: drop-shadow(0 0 15px var(--color-primary)); }
-        
-        /* Basic particles remain for now (z-index 1 so they are behind content but visible) */
-        .particle { position: absolute; background: var(--color-primary); border-radius: 50%; opacity: 0.3; z-index: 1; pointer-events: none; }
 
         /* --------------------------------------------------
            LIVE TERMINAL DEMO
@@ -378,7 +382,10 @@
     </header>
 
     <section class="hero" id="home">
-        <div id="particles"></div>
+        <!-- Canvas VFX Layers -->
+        <canvas id="grid-canvas"></canvas>
+        <canvas id="particle-canvas"></canvas>
+        
         <div class="hero-content">
             <div class="ai-icon">⚕️</div>
             <h1>Next-Gen Skin Analysis</h1>
@@ -539,11 +546,9 @@
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            // Dot moves exactly with the hardware mouse instantly via 3D transform
             cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
         });
 
-        // Animation loop for the elastic trailing effect
         function renderCursor() {
             outlineX += (mouseX - outlineX) * 0.15;
             outlineY += (mouseY - outlineY) * 0.15;
@@ -568,7 +573,8 @@
                 document.querySelector('#boot-screen').style.display = 'none';
                 startMainAnimations();
                 startTerminalLoop();
-                initGridRipples(); // Ignite the grid ripples right here
+                initGridRipples(); 
+                initBioTechParticles();
             }}, '+=200');
         };
 
@@ -579,11 +585,7 @@
 
         // 3. GRID RIPPLE ENGINE
         function initGridRipples() {
-            const heroSection = document.querySelector('.hero');
-            const canvas = document.createElement('canvas');
-            canvas.id = 'grid-canvas';
-            heroSection.prepend(canvas); 
-            
+            const canvas = document.getElementById('grid-canvas');
             const ctx = canvas.getContext('2d');
             let width, height, cx, cy, maxRadius;
             const gridSize = 50; 
@@ -630,8 +632,10 @@
                     let outerRadius = r.radius + r.thickness;
 
                     let grad = ctx.createRadialGradient(cx, cy, innerRadius, cx, cy, outerRadius);
+                    let peakAlpha = Math.min(1, fadeOut * 1.5);
                     grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-                    grad.addColorStop(0.5, `rgba(255, 255, 255, ${fadeOut})`);
+                    grad.addColorStop(0.3, `rgba(255, 255, 255, ${peakAlpha})`);
+                    grad.addColorStop(0.7, `rgba(255, 255, 255, ${peakAlpha})`); 
                     grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
                     ctx.fillStyle = grad;
@@ -650,9 +654,9 @@
                     ctx.moveTo(0, y); ctx.lineTo(width, y);
                 }
                 
-                ctx.lineWidth = 2.5; 
+                ctx.lineWidth = 3; 
                 ctx.strokeStyle = '#00FFFF'; 
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 25;
                 ctx.shadowColor = '#00FFFF';
                 ctx.stroke();
 
@@ -661,7 +665,130 @@
             render();
         }
 
-        // 4. DECRYPTION EFFECT (ANIME.JS POWERED)
+        // 4. BIO-TECH PARTICLE ENGINE
+        function initBioTechParticles() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            let spores = [];
+            let packets = [];
+
+            function resize() {
+                w = window.innerWidth;
+                h = window.innerHeight;
+                canvas.width = w;
+                canvas.height = h;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            // Populate organic drifting spores
+            for(let i = 0; i < 50; i++) {
+                spores.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    baseVx: (Math.random() - 0.5) * 0.2,
+                    baseVy: (Math.random() - 0.5) * 0.2,
+                    r: Math.random() * 2 + 1,
+                    blur: Math.random() * 3,
+                    alpha: Math.random() * 0.4 + 0.1
+                });
+            }
+
+            function loop() {
+                ctx.clearRect(0, 0, w, h);
+
+                // Spawn circuit data packets on the 50px grid
+                if(Math.random() < 0.04 && packets.length < 8) {
+                    let isHoriz = Math.random() > 0.5;
+                    let gridCoord = Math.floor((Math.random() * (isHoriz ? h : w)) / 50) * 50;
+                    packets.push({
+                        x: isHoriz ? (Math.random() > 0.5 ? 0 : w) : gridCoord,
+                        y: isHoriz ? gridCoord : (Math.random() > 0.5 ? 0 : h),
+                        vx: isHoriz ? (Math.random() > 0.5 ? 8 : -8) : 0,
+                        vy: isHoriz ? 0 : (Math.random() > 0.5 ? 8 : -8)
+                    });
+                }
+
+                // Render Packets
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#00FFFF';
+                ctx.strokeStyle = '#00FFFF';
+                ctx.lineWidth = 2;
+
+                for(let i = packets.length - 1; i >= 0; i--) {
+                    let p = packets[i];
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    p.x += p.vx; 
+                    p.y += p.vy;
+                    // Draw a short trail line
+                    ctx.lineTo(p.x - (p.vx * 6), p.y - (p.vy * 6));
+                    ctx.stroke();
+
+                    if(p.x < 0 || p.x > w || p.y < 0 || p.y > h) packets.splice(i, 1);
+                }
+                ctx.shadowBlur = 0; 
+
+                // Render Spores (with Repulsion & Neural Flashes)
+                for(let i = 0; i < spores.length; i++) {
+                    let p = spores[i];
+
+                    // Magnetic Cursor Repulsion
+                    let dx = p.x - mouseX;
+                    let dy = p.y - mouseY;
+                    let dist = Math.hypot(dx, dy);
+                    if(dist < 120) {
+                        let force = (120 - dist) / 120;
+                        p.vx += (dx / dist) * force * 0.2;
+                        p.vy += (dy / dist) * force * 0.2;
+                    }
+
+                    // Friction & Base Velocity Restoring
+                    p.vx *= 0.96; 
+                    p.vy *= 0.96;
+                    p.x += p.vx + p.baseVx; 
+                    p.y += p.vy + p.baseVy;
+
+                    // Wrap edges
+                    if(p.x < 0) p.x = w; if(p.x > w) p.x = 0;
+                    if(p.y < 0) p.y = h; if(p.y > h) p.y = 0;
+
+                    // Draw Spore
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(0, 150, 136, ${p.alpha})`;
+                    ctx.filter = `blur(${p.blur}px)`;
+                    ctx.fill();
+                    ctx.filter = 'none';
+
+                    // Neural Flashes
+                    for(let j = i + 1; j < spores.length; j++) {
+                        let p2 = spores[j];
+                        let d2 = Math.hypot(p.x - p2.x, p.y - p2.y);
+                        if(d2 < 45) { 
+                            let midX = (p.x + p2.x) / 2;
+                            let midY = (p.y + p2.y) / 2;
+                            let intensity = (45 - d2) / 45;
+                            
+                            ctx.beginPath();
+                            ctx.arc(midX, midY, 1.5 + intensity * 2, 0, Math.PI * 2);
+                            ctx.fillStyle = `rgba(0, 255, 255, ${intensity})`;
+                            ctx.shadowBlur = 8;
+                            ctx.shadowColor = '#00FFFF';
+                            ctx.fill();
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                }
+                requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        // 5. DECRYPTION EFFECT (ANIME.JS POWERED)
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
         const decryptElements = document.querySelectorAll('.cipher-text');
 
@@ -682,7 +809,6 @@
 
         function runDecryption(target) {
             const originalText = target.dataset.original;
-            
             anime({
                 targets: { val: 0 },
                 val: 100,
@@ -703,7 +829,7 @@
             });
         }
 
-        // 5. ITERATIVE TERMINAL DEMO (RANDOMIZED CADENCE)
+        // 6. ITERATIVE TERMINAL DEMO (RANDOMIZED CADENCE)
         const scenarios = [
             { user: "I have a red, itchy patch on my forearm.", result: "Possible Contact Dermatitis detected. Recommend keeping area dry and applying cool compress." },
             { user: "This mole on my shoulder changed shape.", result: "Asymmetry detected. High priority: Please consult a dermatologist for a biopsy immediately." },
@@ -742,31 +868,8 @@
             }
         }
 
-        // 6. ANIMATION LOOPS & EXISTING PARTICLES
+        // 7. ANIMATION LOOPS & SCROLL REVEALS
         anime({ targets: '.scan-line', top: ['0%', '100%'], easing: 'linear', duration: 2500, loop: true, direction: 'alternate' });
-
-        const particleContainer = document.getElementById('particles');
-        for (let i = 0; i < 80; i++) { 
-            const p = document.createElement('div');
-            p.classList.add('particle');
-            p.style.width = Math.random() * 4 + 'px';
-            p.style.height = p.style.width;
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.top = Math.random() * 100 + 'vh';
-            particleContainer.appendChild(p);
-        }
-
-        anime({
-            targets: '.particle',
-            translateY: function() { return anime.random(-100, 100); }, 
-            translateX: function() { return anime.random(-100, 100); },
-            opacity: [0.1, 0.5],
-            easing: 'linear', 
-            duration: function() { return anime.random(1000, 2000); }, 
-            delay: anime.stagger(50),
-            loop: true,
-            direction: 'alternate'
-        });
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
