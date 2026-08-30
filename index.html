@@ -586,7 +586,7 @@
             initScrollReveals();
         }
 
-        // 4. GRID RIPPLE ENGINE (OPTIMIZED)
+        // 4. GRID RIPPLE ENGINE
         function initGridRipples() {
             const canvas = document.getElementById('grid-canvas');
             const ctx = canvas.getContext('2d');
@@ -653,7 +653,6 @@
                     ctx.moveTo(0, y); ctx.lineTo(width, y);
                 }
                 
-                // Faked glow technique (Double Stroking)
                 ctx.lineWidth = 8; 
                 ctx.strokeStyle = 'rgba(0, 255, 255, 0.25)';
                 ctx.stroke();
@@ -667,7 +666,7 @@
             render();
         }
 
-        // 5. BIO-TECH PARTICLE ENGINE (CRASH-PROOFED & OPTIMIZED)
+        // 5. BIO-TECH PARTICLE ENGINE (OVERHAULED DYNAMICS)
         function initBioTechParticles() {
             const canvas = document.getElementById('particle-canvas');
             const ctx = canvas.getContext('2d');
@@ -684,11 +683,13 @@
             window.addEventListener('resize', resize);
             resize();
 
-            for(let i = 0; i < 50; i++) {
+            // Doubled spore count & increased base velocity potential
+            for(let i = 0; i < 100; i++) {
                 spores.push({
                     x: Math.random() * w, y: Math.random() * h,
-                    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-                    baseVx: (Math.random() - 0.5) * 0.2, baseVy: (Math.random() - 0.5) * 0.2,
+                    vx: 0, vy: 0,
+                    baseVx: (Math.random() - 0.5) * 1,
+                    baseVy: (Math.random() - 0.5) * 1,
                     r: Math.random() * 3 + 1.5,
                     alpha: Math.random() * 0.4 + 0.1
                 });
@@ -697,14 +698,17 @@
             function loop() {
                 ctx.clearRect(0, 0, w, h);
 
-                if(Math.random() < 0.04 && packets.length < 8) {
+                // Zoomer Bug Fix: Explicit directional travel based on spawn edge
+                if(Math.random() < 0.04 && packets.length < 12) {
                     let isHoriz = Math.random() > 0.5;
+                    let startAtZero = Math.random() > 0.5;
                     let gridCoord = Math.floor((Math.random() * (isHoriz ? h : w)) / 50) * 50;
+                    
                     packets.push({
-                        x: isHoriz ? (Math.random() > 0.5 ? 0 : w) : gridCoord,
-                        y: isHoriz ? gridCoord : (Math.random() > 0.5 ? 0 : h),
-                        vx: isHoriz ? (Math.random() > 0.5 ? 8 : -8) : 0,
-                        vy: isHoriz ? 0 : (Math.random() > 0.5 ? 8 : -8)
+                        x: isHoriz ? (startAtZero ? 0 : w) : gridCoord,
+                        y: isHoriz ? gridCoord : (startAtZero ? 0 : h),
+                        vx: isHoriz ? (startAtZero ? 8 : -8) : 0,
+                        vy: isHoriz ? 0 : (startAtZero ? 8 : -8)
                     });
                 }
 
@@ -724,11 +728,16 @@
                 for(let i = 0; i < spores.length; i++) {
                     let p = spores[i];
 
+                    // Continuous Organic Jitter (Brownian Motion)
+                    p.baseVx += (Math.random() - 0.5) * 0.05;
+                    p.baseVy += (Math.random() - 0.5) * 0.05;
+                    p.baseVx = Math.max(-1.5, Math.min(1.5, p.baseVx));
+                    p.baseVy = Math.max(-1.5, Math.min(1.5, p.baseVy));
+
                     let dx = p.x - mouseX;
                     let dy = p.y - mouseY;
                     let dist = Math.hypot(dx, dy);
                     
-                    // CRITICAL FIX: dist > 0.1 prevents Division by Zero (NaN) crash
                     if(dist < 120 && dist > 0.1) {
                         let force = (120 - dist) / 120;
                         p.vx += (dx / dist) * force * 0.2;
